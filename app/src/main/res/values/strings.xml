@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">SpotNView</string>
+    <string name="sign_in_page">Sign_in</string>
+    <string name="web_client_ID">615696460516-52do6dsgmcn7vg65g8en2bad4in2vef4.apps.googleusercontent.com</string>
+    <string name="google">Sign-in by Google</string>
+    <string name="facebook">Sign-in by Facebook</string>
+    <string name="facebook_app_id">909289830348313</string>
+    <string name="fb_login_protocol_scheme">fb909289830348313</string>
+    <string name="facebook_client_token">6525771943b4643a7fff3788b505468d</string>
+
+</resources>

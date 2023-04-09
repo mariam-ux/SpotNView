@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "615696460516",
+    "firebase_url": "https://spotnview-default-rtdb.firebaseio.com",
+    "project_id": "spotnview",
+    "storage_bucket": "spotnview.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:615696460516:android:6f1cd1498c61c1ce435af1",
+        "android_client_info": {
+          "package_name": "com.example.spotnview"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "615696460516-uectggepk1fja3fbvb59cbc48die51sn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.spotnview",
+            "certificate_hash": "abb53aeb27f2e3b74ba3525ce31591a1ac0e4dd4"
+          }
+        },
+        {
+          "client_id": "615696460516-52do6dsgmcn7vg65g8en2bad4in2vef4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCPnPkX4d61tTbuIgkCiBoxkarAGK2cWzY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "615696460516-52do6dsgmcn7vg65g8en2bad4in2vef4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
