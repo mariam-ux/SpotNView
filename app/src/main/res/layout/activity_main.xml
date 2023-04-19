@@ -11,8 +11,8 @@
 
     <Button
         android:id="@+id/Google_btn"
-        android:layout_width="232dp"
-        android:layout_height="48dp"
+        android:layout_width="243dp"
+        android:layout_height="52dp"
         android:layout_marginStart="158dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="159dp"
@@ -26,7 +26,6 @@
         app:layout_constraintHorizontal_bias="0.474"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
-
 
 
     <TextView
@@ -62,16 +61,20 @@
 
     <Button
         android:id="@+id/fbBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="237dp"
+        android:layout_height="41dp"
         android:layout_marginStart="135dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="170dp"
-        android:text="Button"
+        android:background="@drawable/com_facebook_button_background"
+        android:text="@string/facebook_btn"
+        android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.369"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Google_btn" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

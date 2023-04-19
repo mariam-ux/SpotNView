@@ -4,7 +4,7 @@ package com.example.spotnview;
 import androidx.annotation.NonNull;
 
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.appcompat.widget.PopupMenu;
 
 
 import android.content.Intent;
@@ -40,6 +40,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -83,15 +84,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+
         setContentView(R.layout.activity_main);
+
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(getApplication());
+
         callbackManager = CallbackManager.Factory.create();
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
         if(isLoggedIn) {
             startActivity(new Intent(MainActivity.this, ProfileActivity.class));
-
             finish();
         }
 

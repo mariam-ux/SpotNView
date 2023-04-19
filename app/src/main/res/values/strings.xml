@@ -7,5 +7,11 @@
     <string name="facebook_app_id">909289830348313</string>
     <string name="fb_login_protocol_scheme">fb909289830348313</string>
     <string name="facebook_client_token">6525771943b4643a7fff3788b505468d</string>
+    <string name="facebook_btn">Sign-in by facebook</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
 
 </resources>
