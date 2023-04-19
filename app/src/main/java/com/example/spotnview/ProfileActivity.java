@@ -23,24 +23,36 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONObject;
 
-public class ProfileActivity extends BaseActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
+public class ProfileActivity extends BaseActivity {
     private GoogleSignInClient googleSignInClient;
     private GoogleSignInOptions gso;
 
-    private Button logoutBtn;
 
-
+    @Override
+    protected int getContentViewId() {
+        return R.layout.activity_profile;
+    }
+    @Override
+    protected int getBottomNavigationMenuId() {
+        return R.id.navigation_profile;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-
-        bottomNavigationView.setSelectedItemId(R.id.navigation_home);
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            // User is not signed in, start the sign-in activity
+            Intent signInIntent = new Intent(this, MainActivity.class);
+            startActivity(signInIntent);
+            finish();
+        }
 
         Button menuButton = findViewById(R.id.menu_button);
         PopupMenu popupMenu = new PopupMenu(this, menuButton);
@@ -104,24 +116,6 @@ public class ProfileActivity extends BaseActivity implements BottomNavigationVie
             }
         });
     }
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation item selection
-        int itemId = item.getItemId();
-        if (itemId == R.id.navigation_home) {
-            startActivity(new Intent(ProfileActivity.this, ProfileActivity.class));
-            return true;
-        } else if (itemId == R.id.navigation_reviews) {
-            startActivity(new Intent(ProfileActivity.this, ReviewsActivity.class));
-            return true;
-        } else if (itemId == R.id.navigation_history) {
-            startActivity(new Intent(ProfileActivity.this, HistoryActivity.class));
-            return true;
-        }
-        return false;
-    }
-    @Override
-    protected int getContentViewId() {
-        return R.layout.activity_profile;
-    }
+
+
 }

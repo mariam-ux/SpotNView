@@ -9,11 +9,21 @@
     <item
         android:id="@+id/navigation_reviews"
         android:icon="@android:drawable/btn_star_big_on"
-        android:title="@string/title_dashboard"
+        android:title="@string/title_review"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/navigation_history"
         android:icon="@android:drawable/btn_star_big_on"
-        android:title="@string/title_notifications"
+        android:title="@string/title_history"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/navigation_signin"
+        android:icon="@android:drawable/btn_star_big_on"
+        android:title="@string/title_signin"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/navigation_profile"
+        android:icon="@android:drawable/btn_star_big_on"
+        android:title="@string/title_profile"
         app:showAsAction="ifRoom" />
 </menu>

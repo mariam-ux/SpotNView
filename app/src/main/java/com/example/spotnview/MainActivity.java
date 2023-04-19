@@ -58,7 +58,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private Button Gbtn;
     private static final String TAG = "GoogleActivity";
@@ -79,6 +79,14 @@ public class MainActivity extends AppCompatActivity {
 
     private Button facebookBtn;
 
+    @Override
+    protected int getContentViewId() {
+        return R.layout.activity_main;
+    }
+    @Override
+    protected int getBottomNavigationMenuId() {
+        return R.id.navigation_signin;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

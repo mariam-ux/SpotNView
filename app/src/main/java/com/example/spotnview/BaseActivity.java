@@ -21,40 +21,52 @@ public abstract class BaseActivity extends AppCompatActivity implements BottomNa
 
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
+        bottomNavigationView.setOnNavigationItemSelectedListener(this);
         setupBottomNavigationBar();
-        // Set the default selected item
-        bottomNavigationView.setSelectedItemId(R.id.navigation_home);
+
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation item clicks here
         int itemId = item.getItemId();
-        if (itemId == R.id.navigation_home) {
-            startActivity(new Intent(BaseActivity.this, ProfileActivity.class));
-            return true;
-        } else if (itemId == R.id.navigation_reviews) {
-            startActivity(new Intent(BaseActivity.this, ReviewsActivity.class));
-            return true;
+        Intent intent = null;
+        if (itemId == R.id.navigation_reviews) {
+            intent = new Intent(this, ReviewsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
         } else if (itemId == R.id.navigation_history) {
-            startActivity(new Intent(BaseActivity.this, HistoryActivity.class));
+            intent = new Intent(this, HistoryActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        } else if (itemId == R.id.navigation_profile) {
+            if (!(this instanceof ProfileActivity)) {
+                intent = new Intent(this, ProfileActivity.class);
+            }
+
+        } else if (itemId == R.id.navigation_signin) {
+            intent = new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        }
+        if (intent != null) {
+            startActivity(intent);
             return true;
+        } else {
+            return false;
         }
 
-        return false;
+
     }
 
-    private void setupBottomNavigationBar() {
+    protected void setupBottomNavigationBar() {
         // Set selected item
-        BottomNavigationView navView = findViewById(R.id.bottom_navigation);
-        Menu menu = navView.getMenu();
-        MenuItem menuItem = menu.getItem(getContentViewId());
-        menuItem.setChecked(true);
+        int menuId = getBottomNavigationMenuId();
+        bottomNavigationView.setSelectedItemId(menuId);
+
     }
 
 
 
 
     protected abstract int getContentViewId();
+
+    protected abstract int getBottomNavigationMenuId();
 }
