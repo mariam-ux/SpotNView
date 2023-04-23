@@ -4,6 +4,7 @@ package com.example.spotnview;
 import androidx.annotation.NonNull;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.PopupMenu;
 
 
 import android.content.Intent;
@@ -19,12 +20,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.LoginStatusCallback;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
@@ -51,6 +55,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 
+import org.json.JSONObject;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -76,7 +82,7 @@ public class MainActivity extends BaseActivity {
 
     private Button facebookBtn;
 
-
+    private TextView signedIn;
     @Override
     protected int getContentViewId() {
         return R.layout.activity_main;
@@ -92,6 +98,8 @@ public class MainActivity extends BaseActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         // set the selected item
         bottomNavigationView.setSelectedItemId(R.id.navigation_signin);
+
+        signedIn = findViewById(R.id.signedIn);
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(getApplication());
@@ -113,10 +121,9 @@ public class MainActivity extends BaseActivity {
                 LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
+                        FirebaseUser currentUser = mAuth.getCurrentUser();
+                        updateUI(currentUser);
 
-
-                        startActivity(new Intent(MainActivity.this, HomeActivity.class));
-                        finish();
                     }
 
                     @Override
@@ -194,6 +201,67 @@ public class MainActivity extends BaseActivity {
 
             }
         });
+
+        //handle log out popup menu
+        Button menuButton = findViewById(R.id.menu_button);
+        PopupMenu popupMenu = new PopupMenu(this, menuButton);
+
+        popupMenu.getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
+
+        menuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupMenu.show();
+            }
+        });
+
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.menu_logout:
+                        singOut();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+
+        GraphRequest request = GraphRequest.newMeRequest(
+                AccessToken.getCurrentAccessToken(),
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        // Handle the response
+                    }
+                });
+
+
+
+
+
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+        if(acct != null){
+            String personEmial = acct.getEmail();
+
+        }
+
+
+
+    }
+
+    public void singOut(){
+        LoginManager.getInstance().logOut();
+        googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(Task<Void> task) {
+
+                FirebaseAuth.getInstance().signOut();
+                updateUI(null);
+            }
+        });
+
 
 
     }
@@ -337,9 +405,18 @@ public class MainActivity extends BaseActivity {
 
 
     private void updateUI(FirebaseUser user) {
-
+        if(user != null) {
+            Gbtn.setVisibility(View.GONE);
+            facebookBtn.setVisibility(View.GONE);
+            signedIn.setVisibility(View.VISIBLE);
+        } else {
+            Gbtn.setVisibility(View.VISIBLE);
+            facebookBtn.setVisibility(View.VISIBLE);
+            signedIn.setVisibility(View.GONE);
+        }
 
     }
+
 
 
 

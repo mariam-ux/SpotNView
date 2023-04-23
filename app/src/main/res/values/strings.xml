@@ -13,6 +13,7 @@
     <string name="title_reviews">Review</string>
     <string name="title_signin">Sign-in</string>
     <string name="title_home">Home</string>
+    <string name="user_signed_in">You are already signed in. Logout to sign in to a different account.</string>
 
 
 </resources>
