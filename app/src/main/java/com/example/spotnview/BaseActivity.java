@@ -5,7 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
+import android.os.Handler;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -13,6 +14,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public abstract class BaseActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
 
     protected BottomNavigationView bottomNavigationView;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,52 +24,77 @@ public abstract class BaseActivity extends AppCompatActivity implements BottomNa
 
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        setupBottomNavigationBar();
+
+        bottomNavigationView.setSelectedItemId(R.id.navigation_signin);
 
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation item clicks here
+        Log.d("ONIS", "called");
         int itemId = item.getItemId();
-        Intent intent = null;
+
         if (itemId == R.id.navigation_reviews) {
-            intent = new Intent(this, ReviewsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        } else if (itemId == R.id.navigation_history) {
-            intent = new Intent(this, HistoryActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        } else if (itemId == R.id.navigation_profile) {
-            if (!(this instanceof ProfileActivity)) {
-                intent = new Intent(this, ProfileActivity.class);
+            if (!(this instanceof ReviewsActivity)) {
+                startActivity(new Intent(this, ReviewsActivity.class));
+                return true;
             }
-
+            Log.d("slected", String.valueOf(itemId));
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("getter", String.valueOf(bottomNavigationView.getSelectedItemId()));
+                }
+            }, 1000);
+        } else if (itemId == R.id.navigation_history) {
+            if (!(this instanceof HistoryActivity)) {
+                startActivity(new Intent(this, HistoryActivity.class));
+                return true;
+            }
+            Log.d("slected", String.valueOf(itemId));
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("getter", String.valueOf(bottomNavigationView.getSelectedItemId()));
+                }
+            }, 1000);
+        } else if (itemId == R.id.navigation_home) {
+            if (!(this instanceof HomeActivity)) {
+                startActivity(new Intent(this, HomeActivity.class));
+                return true;
+            }
+            Log.d("slected", String.valueOf(itemId));
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("getter", String.valueOf(bottomNavigationView.getSelectedItemId()));
+                }
+            }, 1000);
         } else if (itemId == R.id.navigation_signin) {
-            intent = new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
+            if (!(this instanceof MainActivity)){
+                startActivity(new Intent(this, MainActivity.class));
+                return true;
+            }
+            Log.d("slected", String.valueOf(itemId));
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("getter", String.valueOf(bottomNavigationView.getSelectedItemId()));
+                }
+            }, 1000);
         }
-        if (intent != null) {
-            startActivity(intent);
-            return true;
-        } else {
-            return false;
-        }
 
+        return true;
 
     }
-
-    protected void setupBottomNavigationBar() {
-        // Set selected item
-        int menuId = getBottomNavigationMenuId();
-        bottomNavigationView.setSelectedItemId(menuId);
-
-    }
-
-
-
 
     protected abstract int getContentViewId();
 
-    protected abstract int getBottomNavigationMenuId();
+
+
+
+
+
+
 }

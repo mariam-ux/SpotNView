@@ -3,8 +3,7 @@ package com.example.spotnview;
 
 import androidx.annotation.NonNull;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.PopupMenu;
+import androidx.annotation.Nullable;
 
 
 import android.content.Intent;
@@ -16,6 +15,7 @@ import android.os.Bundle;
 
 import android.util.Base64;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -26,11 +26,8 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.LoginStatusCallback;
-import com.facebook.internal.CallbackManagerImpl;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -72,29 +69,29 @@ public class MainActivity extends BaseActivity {
     private GoogleSignInClient googleSignInClient;
     private GoogleSignInOptions gso;
     private static final int RC_SIGN_IN = 9001;
-    private static final int RC_SIGN_IN_FACEBOOK = CallbackManagerImpl.RequestCodeOffset.Login.toRequestCode();
+
 
     private FirebaseAuth mAuth;
     private CallbackManager callbackManager;
 
     private Button facebookBtn;
 
+
     @Override
     protected int getContentViewId() {
         return R.layout.activity_main;
-    }
-    @Override
-    protected int getBottomNavigationMenuId() {
-        return R.id.navigation_signin;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
         setContentView(R.layout.activity_main);
+
+        Log.d("slectedItemId", String.valueOf(R.id.navigation_signin));
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(this);
+        // set the selected item
+        bottomNavigationView.setSelectedItemId(R.id.navigation_signin);
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(getApplication());
@@ -103,7 +100,7 @@ public class MainActivity extends BaseActivity {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
         if(isLoggedIn) {
-            startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+            startActivity(new Intent(MainActivity.this, HomeActivity.class));
             finish();
         }
 
@@ -118,7 +115,7 @@ public class MainActivity extends BaseActivity {
                     public void onSuccess(LoginResult loginResult) {
 
 
-                        startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                        startActivity(new Intent(MainActivity.this, HomeActivity.class));
                         finish();
                     }
 
@@ -139,7 +136,7 @@ public class MainActivity extends BaseActivity {
                         // User was previously logged in, can log them in directly here.
                         // If this callback is called, a popup notification appears that says
                         // "Logged in as <User Name>"
-                        startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                        startActivity(new Intent(MainActivity.this, HomeActivity.class));
                         finish();
                     }
                     @Override
@@ -200,6 +197,8 @@ public class MainActivity extends BaseActivity {
 
 
     }
+
+
      public void signIn(){
         Intent signInIntent = googleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -305,7 +304,7 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    private void handleFacebookAccessToken(AccessToken token) {
+    private void handleFacebookAccessToken(@Nullable AccessToken token) {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
@@ -339,13 +338,12 @@ public class MainActivity extends BaseActivity {
 
     private void updateUI(FirebaseUser user) {
 
-        if (user != null) {
-            finish();
 
-            Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-            startActivity(intent);
-
-        }
     }
+
+
+
+
+
 
 }

@@ -1,29 +1,31 @@
-<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <item
         android:id="@+id/navigation_home"
-        android:icon="@android:drawable/btn_star_big_on"
-        android:title="@string/title_home"
-        app:showAsAction="ifRoom" />
+        android:icon="@android:drawable/btn_star"
+        android:title="@string/title_home" />
+
     <item
         android:id="@+id/navigation_reviews"
-        android:icon="@android:drawable/btn_star_big_on"
-        android:title="@string/title_review"
-        app:showAsAction="ifRoom" />
+        android:icon="@android:drawable/btn_star"
+        android:title="@string/title_reviews" />
+
     <item
         android:id="@+id/navigation_history"
-        android:icon="@android:drawable/btn_star_big_on"
-        android:title="@string/title_history"
-        app:showAsAction="ifRoom" />
+        android:icon="@android:drawable/btn_star"
+        android:title="@string/title_history" />
+
     <item
         android:id="@+id/navigation_signin"
-        android:icon="@android:drawable/btn_star_big_on"
-        android:title="@string/title_signin"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/navigation_profile"
-        android:icon="@android:drawable/btn_star_big_on"
-        android:title="@string/title_profile"
-        app:showAsAction="ifRoom" />
+        android:icon="@android:drawable/btn_star"
+        android:title="@string/title_signin" />
+
 </menu>
+
+
+
+
+
+
+

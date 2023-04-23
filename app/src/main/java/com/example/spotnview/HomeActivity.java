@@ -1,15 +1,14 @@
 package com.example.spotnview;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
@@ -27,24 +26,28 @@ import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONObject;
 
-public class ProfileActivity extends BaseActivity {
+public class HomeActivity extends BaseActivity {
     private GoogleSignInClient googleSignInClient;
     private GoogleSignInOptions gso;
 
 
     @Override
     protected int getContentViewId() {
-        return R.layout.activity_profile;
+        return R.layout.activity_home;
     }
-    @Override
-    protected int getBottomNavigationMenuId() {
-        return R.id.navigation_profile;
-    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_home);
+
+        Log.d("slectedItemId", String.valueOf(R.id.navigation_home));
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(this);
+
+        // set the selected item
+        bottomNavigationView.setSelectedItemId(R.id.navigation_home);
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
@@ -112,7 +115,7 @@ public class ProfileActivity extends BaseActivity {
             public void onComplete(Task<Void> task) {
                 finish();
                 FirebaseAuth.getInstance().signOut(); // sign out the user
-                startActivity(new Intent(ProfileActivity.this, MainActivity.class));
+                startActivity(new Intent(HomeActivity.this, MainActivity.class));
             }
         });
     }

@@ -9,11 +9,10 @@
     <string name="facebook_client_token">6525771943b4643a7fff3788b505468d</string>
     <string name="facebook_btn">Sign-in by facebook</string>
     <string name="title_activity_home">HomeActivity</string>
-    <string name="title_home">Home</string>
     <string name="title_history">History</string>
-    <string name="title_review">Review</string>
+    <string name="title_reviews">Review</string>
     <string name="title_signin">Sign-in</string>
-    <string name="title_profile">Profile</string>
+    <string name="title_home">Home</string>
 
 
 </resources>
