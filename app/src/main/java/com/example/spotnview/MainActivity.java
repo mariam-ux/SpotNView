@@ -32,16 +32,14 @@ import com.facebook.GraphResponse;
 import com.facebook.LoginStatusCallback;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-
 import com.google.android.gms.tasks.OnCompleteListener;
-
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -65,23 +63,12 @@ public class MainActivity extends BaseActivity {
 
     private Button Gbtn;
     private static final String TAG = "GoogleActivity";
-
-
-
-     // Can be any integer unique to the Activity.
-    private boolean showOneTapUI = true;
-
-    private boolean buttonState = true;
     private GoogleSignInClient googleSignInClient;
     private GoogleSignInOptions gso;
     private static final int RC_SIGN_IN = 9001;
-
-
     private FirebaseAuth mAuth;
     private CallbackManager callbackManager;
-
     private Button facebookBtn;
-
     private TextView signedIn;
     @Override
     protected int getContentViewId() {
@@ -93,25 +80,29 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.d("slectedItemId", String.valueOf(R.id.navigation_signin));
+        //instance of the BottomNavigationView
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        // set the selected item
         bottomNavigationView.setSelectedItemId(R.id.navigation_signin);
+        Log.d("slectedItemId", String.valueOf(R.id.navigation_signin));
 
+        //if user is signed in a texted view is displayed
         signedIn = findViewById(R.id.signedIn);
 
+        //facebook sign-in bottom handlings:
         FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(getApplication());
+        AppEventsLogger.activateApp(getApplication());//
 
         callbackManager = CallbackManager.Factory.create();
+        //ckeck if the user is already signed in using facebook
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
         if(isLoggedIn) {
-            startActivity(new Intent(MainActivity.this, HomeActivity.class));
-            finish();
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            updateUI(currentUser);
         }
 
+        //setting the fb sign-in bottom
         facebookBtn = findViewById(R.id.fbBtn);
         facebookBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,7 +114,6 @@ public class MainActivity extends BaseActivity {
                     public void onSuccess(LoginResult loginResult) {
                         FirebaseUser currentUser = mAuth.getCurrentUser();
                         updateUI(currentUser);
-
                     }
 
                     @Override
@@ -140,9 +130,7 @@ public class MainActivity extends BaseActivity {
                 LoginManager.getInstance().retrieveLoginStatus(MainActivity.this, new LoginStatusCallback() {
                     @Override
                     public void onCompleted(AccessToken accessToken) {
-                        // User was previously logged in, can log them in directly here.
-                        // If this callback is called, a popup notification appears that says
-                        // "Logged in as <User Name>"
+                        Toast.makeText(MainActivity.this, "Logged in as successfully" , Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(MainActivity.this, HomeActivity.class));
                         finish();
                     }
@@ -160,24 +148,6 @@ public class MainActivity extends BaseActivity {
 
             }
         });
-
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo(
-                    "com.example.spotnview",  // replace with your package name
-                    PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-
-
-
 
 
 
@@ -256,9 +226,13 @@ public class MainActivity extends BaseActivity {
         googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(Task<Void> task) {
-
-                FirebaseAuth.getInstance().signOut();
-                updateUI(null);
+                FirebaseUser currentUser = mAuth.getCurrentUser();
+                if(currentUser != null) {
+                    FirebaseAuth.getInstance().signOut();
+                    updateUI(null);
+                } else {
+                    Toast.makeText(MainActivity.this, "you are signed out", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -306,7 +280,7 @@ public class MainActivity extends BaseActivity {
         }
         callbackManager.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            // Get the Facebook access token
+            // Get the Facebook access token to use it to get their info
             AccessToken token = AccessToken.getCurrentAccessToken();
 
             if (token == null) {
@@ -361,6 +335,7 @@ public class MainActivity extends BaseActivity {
                             User newUser = new User(displayName, email);
                             userRef.setValue(newUser);
                             updateUI(user);
+                            Toast.makeText(MainActivity.this, "Signed in successfully!", Toast.LENGTH_SHORT).show();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -391,7 +366,7 @@ public class MainActivity extends BaseActivity {
                             User newUser = new User(displayName, email);
                             userRef.setValue(newUser);
                             updateUI(user);
-
+                            Toast.makeText(MainActivity.this, "Signed in successfully!", Toast.LENGTH_SHORT).show();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -406,6 +381,7 @@ public class MainActivity extends BaseActivity {
 
     private void updateUI(FirebaseUser user) {
         if(user != null) {
+
             Gbtn.setVisibility(View.GONE);
             facebookBtn.setVisibility(View.GONE);
             signedIn.setVisibility(View.VISIBLE);
