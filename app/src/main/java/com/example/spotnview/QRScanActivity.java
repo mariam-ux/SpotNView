@@ -14,6 +14,7 @@ import android.widget.Button;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 import android.os.Bundle;
+import com.journeyapps.barcodescanner.CaptureActivity;
 
 public class QRScanActivity extends AppCompatActivity {
     Button btn_scan;
@@ -55,4 +56,8 @@ public class QRScanActivity extends AppCompatActivity {
 
         }
     });
+
+    private class CaptureAct {
+
     }
+}
