@@ -18,7 +18,10 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+    configurations {
+        all*.exclude module: 'play-services-vision-common'
 
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -58,7 +61,15 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:20.1.0'
     implementation 'com.google.firebase:firebase-core:21.1.1'
     implementation 'com.google.android.gms:play-services-auth:20.5.0'
+    //
+    implementation 'com.google.android.gms:play-services-vision:20.0.0'
+    implementation 'com.google.firebase:firebase-ml-vision-barcode-model:16.1.1'
+    implementation 'com.google.firebase:firebase-ml-vision:24.1.0'
+    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:18.0.2'
+    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
 
+
+    //nav
     def nav_version = "2.3.5"
     implementation "androidx.navigation:navigation-fragment:$nav_version"
     implementation "androidx.navigation:navigation-ui:$nav_version"

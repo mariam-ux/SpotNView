@@ -25,11 +25,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONObject;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+
 
 public class HomeActivity extends BaseActivity {
     private GoogleSignInClient googleSignInClient;
     private GoogleSignInOptions gso;
-
+    private Button cbtn,qrbtnlink;
 
     @Override
     protected int getContentViewId() {
@@ -48,7 +55,22 @@ public class HomeActivity extends BaseActivity {
 
         // set the selected item
         bottomNavigationView.setSelectedItemId(R.id.navigation_home);
-
+        cbtn=findViewById(R.id.cbtn);
+        qrbtnlink=findViewById(R.id.qrbtnlink);
+        qrbtnlink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent j=new Intent(HomeActivity.this,QRScanActivity.class);
+                startActivity(j);
+            }
+        });
+        cbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i=new Intent(HomeActivity.this,ScanActivity.class);
+                startActivity(i);
+            }
+        });
     }
 
 }
