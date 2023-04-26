@@ -38,43 +38,45 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="91dp"
-        android:layout_height="61dp"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profileImageView"
+        android:layout_width="200dp"
+        android:layout_height="120dp"
         android:layout_marginStart="139dp"
         android:layout_marginTop="152dp"
         android:layout_marginEnd="139dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/icon" />
+        app:srcCompat="@drawable/profile"
+
+       />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="241dp"
         android:layout_height="37dp"
         android:layout_marginStart="158dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="92dp"
         android:background="#00E53935"
         android:backgroundTint="#0000E676"
         android:fontFamily="sans-serif-medium"
-        android:text="Welcome to SpotNView"
+        android:text="@string/sign_in_title"
         android:textAlignment="center"
         android:textColor="#E53935"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.755"
+        app:layout_constraintHorizontal_bias="0.877"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+        app:layout_constraintTop_toBottomOf="@+id/profileImageView" />
 
     <Button
         android:id="@+id/Google_btn"
         android:layout_width="251dp"
         android:layout_height="57dp"
         android:layout_marginStart="158dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="159dp"
         android:background="@drawable/common_google_signin_btn_text_light_normal"
         android:fontFamily="monospace"
@@ -92,13 +94,13 @@
         android:layout_width="245dp"
         android:layout_height="46dp"
         android:layout_marginStart="135dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="170dp"
         android:background="@drawable/com_facebook_button_background"
         android:text="@string/facebook_btn"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.382"
+        app:layout_constraintHorizontal_bias="0.369"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Google_btn" />
 

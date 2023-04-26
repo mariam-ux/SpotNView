@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.PopupMenu;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,12 +51,15 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserInfo;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
@@ -73,6 +78,7 @@ public class MainActivity extends BaseActivity {
     private CallbackManager callbackManager;
     private Button facebookBtn;
     private TextView signedIn;
+
     @Override
     protected int getContentViewId() {
         return R.layout.activity_main;
@@ -82,6 +88,8 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         //instance of the BottomNavigationView
         bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -285,7 +293,6 @@ public class MainActivity extends BaseActivity {
         if (resultCode == RESULT_OK) {
             // Get the Facebook access token to use it to get their info
             AccessToken token = AccessToken.getCurrentAccessToken();
-
             if (token == null) {
                 Log.e(TAG, "Facebook access token is null");
                 return;
@@ -331,8 +338,22 @@ public class MainActivity extends BaseActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             String displayName = user.getDisplayName();
                             String email = user.getEmail();
+                            //google profile
+                            String profilePictureUrl = "";
+                            for (UserInfo profile : user.getProviderData()) {
+                                // Check if the provider is Google
+                                if (GoogleAuthProvider.PROVIDER_ID.equals(profile.getProviderId())) {
+                                    profilePictureUrl = profile.getPhotoUrl().toString();
+                                    break;
+                                }
+                            }
 
-
+                            // Load and display the profile picture
+                            Log.d(TAG, "Profile Picture URL: " + profilePictureUrl);
+                            ImageView profileImageView = findViewById(R.id.profileImageView);
+                            Picasso.get()
+                                    .load(profilePictureUrl)
+                                    .into(profileImageView);
                             // Create a new node for the user in the Realtime Database and set the user data
                             DatabaseReference userRef = database.getReference("users/" + user.getUid());
                             User newUser = new User(displayName, email);
@@ -363,6 +384,24 @@ public class MainActivity extends BaseActivity {
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                             FirebaseUser user = mAuth.getCurrentUser();
+                            //facebook profile
+                            UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
+                                    .setPhotoUri(Uri.parse("https://graph.facebook.com/" + user.getProviderData().get(0).getUid() + "/picture?height=500"))
+                                    .build();
+                            user.updateProfile(profile)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                String profilePictureUrl = user.getPhotoUrl().toString();
+                                                Log.d(TAG, "Profile Picture URL: " + profilePictureUrl);
+                                                ImageView profileImageView = findViewById(R.id.profileImageView);
+                                                Picasso.get()
+                                                        .load(profilePictureUrl)
+                                                        .into(profileImageView);
+                                            }
+                                        }
+                                    });
                             String displayName = user.getDisplayName();
                             String email = user.getEmail();
                             DatabaseReference userRef = database.getReference("users/" + user.getUid());
@@ -384,10 +423,13 @@ public class MainActivity extends BaseActivity {
 
     private void updateUI(FirebaseUser user) {
         if(user != null) {
-
             Gbtn.setVisibility(View.GONE);
             facebookBtn.setVisibility(View.GONE);
             signedIn.setVisibility(View.VISIBLE);
+
+
+
+
         } else {
             Gbtn.setVisibility(View.VISIBLE);
             facebookBtn.setVisibility(View.VISIBLE);
