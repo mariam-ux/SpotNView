@@ -51,31 +51,29 @@ dependencies {
 
     //facebook sdk
     implementation 'com.facebook.android:facebook-android-sdk:latest.release'
-    implementation 'com.google.android.gms:play-services-vision:20.0.0'
-    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:18.0.2'
+
 
     //firebase implementations
     implementation platform('com.google.firebase:firebase-bom:31.4.0')
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-database'
-    implementation 'com.google.firebase:firebase-database:20.2.0'
+    implementation 'com.google.firebase:firebase-database:20.1.0'
     implementation 'com.google.firebase:firebase-core:21.1.1'
     implementation 'com.google.android.gms:play-services-auth:20.5.0'
-    implementation 'com.google.firebase:firebase-ml-vision-barcode-model:16.1.2'
+    //
+    implementation 'com.google.android.gms:play-services-vision:20.0.0'
+    implementation 'com.google.firebase:firebase-ml-vision-barcode-model:16.1.1'
     implementation 'com.google.firebase:firebase-ml-vision:24.1.0'
-
-    //zxing implementations
+    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:18.0.2'
     implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
     implementation('com.journeyapps:zxing-android-embedded:4.3.0') { transitive = false }
-    implementation 'com.google.zxing:core:3.4.1'
+    implementation 'com.google.zxing:core:3.3.0'
 
     //nav
     def nav_version = "2.3.5"
     implementation "androidx.navigation:navigation-fragment:$nav_version"
     implementation "androidx.navigation:navigation-ui:$nav_version"
 
-    //picasso
-    implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
 }
