@@ -6,7 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.PopupMenu;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -88,6 +90,7 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
 
 
@@ -233,7 +236,9 @@ public class MainActivity extends BaseActivity {
     }
 
     public void singOut(){
+        //facebook logout
         LoginManager.getInstance().logOut();
+        //google logout
         googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(Task<Void> task) {
@@ -246,6 +251,12 @@ public class MainActivity extends BaseActivity {
                 }
             }
         });
+        ImageView profileImageView = findViewById(R.id.profileImageView);
+        profileImageView.setImageDrawable(null); // Remove the image
+
+// Set the default profile picture as a placeholder
+        int placeholderResourceId = R.drawable.profile; // Replace with the resource ID of your default profile picture
+        profileImageView.setImageResource(placeholderResourceId);
 
 
 
@@ -347,7 +358,11 @@ public class MainActivity extends BaseActivity {
                                     break;
                                 }
                             }
-
+                            //save the url to use it when the user sign-in
+                            SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("profilePictureUrl", profilePictureUrl);
+                            editor.apply();
                             // Load and display the profile picture
                             Log.d(TAG, "Profile Picture URL: " + profilePictureUrl);
                             ImageView profileImageView = findViewById(R.id.profileImageView);
@@ -394,7 +409,13 @@ public class MainActivity extends BaseActivity {
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
                                                 String profilePictureUrl = user.getPhotoUrl().toString();
+                                                //save the url
+                                                SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                editor.putString("profilePictureUrl", profilePictureUrl);
+                                                editor.apply();
                                                 Log.d(TAG, "Profile Picture URL: " + profilePictureUrl);
+                                                //load the image
                                                 ImageView profileImageView = findViewById(R.id.profileImageView);
                                                 Picasso.get()
                                                         .load(profilePictureUrl)
@@ -426,14 +447,25 @@ public class MainActivity extends BaseActivity {
             Gbtn.setVisibility(View.GONE);
             facebookBtn.setVisibility(View.GONE);
             signedIn.setVisibility(View.VISIBLE);
+            TextView signIn_text = findViewById(R.id.signIn_text);
+            signIn_text.setText(R.string.welcome_title);
+            SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+            String profilePictureUrl = sharedPreferences.getString("profilePictureUrl", "");
 
-
-
-
+            // Display the profile picture if a URL is available
+            if (!profilePictureUrl.isEmpty()) {
+                ImageView profileImageView = findViewById(R.id.profileImageView);
+                Picasso.get().load(profilePictureUrl).into(profileImageView);
+            }
         } else {
             Gbtn.setVisibility(View.VISIBLE);
             facebookBtn.setVisibility(View.VISIBLE);
             signedIn.setVisibility(View.GONE);
+
+            ImageView profileImageView = findViewById(R.id.profileImageView);
+            profileImageView.setImageDrawable(null); // Set the placeholder image resource
+            int placeholderResourceId = R.drawable.profile; // Replace with the resource ID of your default profile picture
+            profileImageView.setImageResource(placeholderResourceId);
         }
 
     }
