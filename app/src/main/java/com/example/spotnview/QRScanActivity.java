@@ -57,7 +57,5 @@ public class QRScanActivity extends AppCompatActivity {
         }
     });
 
-    private class CaptureAct {
 
-    }
 }
