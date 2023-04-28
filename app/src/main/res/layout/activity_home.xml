@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/ligh_blue"
     tools:context=".HomeActivity">
 
 
@@ -17,45 +18,48 @@
         android:fontFamily="sans-serif-medium"
         android:text="Home"
         android:textAlignment="textStart"
+        android:textColor="@color/secondary_color"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <Button
         android:id="@+id/cbtn"
-        android:layout_width="241dp"
-        android:layout_height="55dp"
+        android:layout_width="269dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="240dp"
+        android:backgroundTint="@color/white"
         android:text="Capture"
+        android:textColor="@color/primary_color"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.547"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.263" />
-
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/qrbtnlink"
-        android:layout_width="282dp"
-        android:layout_height="76dp"
-        android:layout_marginTop="56dp"
+        android:layout_width="269dp"
+        android:layout_height="63dp"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="@color/light_color"
         android:text="QR Code Scanner"
+        android:textColor="@color/primary_color"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cbtn"
-        app:layout_constraintVertical_bias="0.118" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        app:itemTextColor="@color/black"
+        android:background="@color/secondary_color"
+        app:itemRippleColor="#00000000"
+        app:itemTextColor="@color/ligh_blue"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

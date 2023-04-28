@@ -12,5 +12,7 @@
     <color name="light_color">#F1FAEE</color>
     <color name="ligh_blue">#A8DADC</color>
     <color name="medium_blue">#457D9D</color>
+    <color name="mango">#FFFB531E</color>
+    <color name="dark_gray">#222121</color>
 
 </resources>

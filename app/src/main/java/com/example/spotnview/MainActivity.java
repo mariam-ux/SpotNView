@@ -13,18 +13,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.content.Intent;
 
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
-import android.os.Bundle;
-
-import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
+
 
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -64,9 +56,6 @@ import com.facebook.appevents.AppEventsLogger;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 public class MainActivity extends BaseActivity {

@@ -4,39 +4,53 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/ligh_blue"
     tools:context=".ScanActivity">
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#00FFFFFF"
+        android:src="@drawable/search"
+        tools:layout_editor_absoluteX="289dp"
+        tools:layout_editor_absoluteY="613dp" />
+
     <ImageView
         android:id="@+id/Imagecontainer"
-        android:layout_width="191dp"
-        android:layout_height="167dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="222dp"
+        android:layout_height="173dp"
+        android:layout_marginTop="96dp"
+        android:background="#80FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.246"
-        app:srcCompat="@android:drawable/ic_menu_camera" />
+        app:layout_constraintTop_toBottomOf="@+id/textdetedcted"
+        app:srcCompat="@drawable/photos" />
 
     <Button
         android:id="@+id/Snapbtn"
         android:layout_width="293dp"
         android:layout_height="50dp"
-        android:layout_marginTop="56dp"
-        android:layout_marginBottom="200dp"
+        android:layout_marginTop="36dp"
+        android:backgroundTint="@color/primary_color"
         android:text="SNAP"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textColor="@color/light_color"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.55"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textdetedcted"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/Imagecontainer" />
 
     <Button
         android:id="@+id/dbtn"
         android:layout_width="298dp"
         android:layout_height="54dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/primary_color"
         android:text="DETEECT"
+        android:textColor="@color/light_color"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.477"
+        app:layout_constraintHorizontal_bias="0.526"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Snapbtn" />
 
@@ -44,15 +58,15 @@
         android:id="@+id/textdetedcted"
         android:layout_width="282dp"
         android:layout_height="59dp"
-        android:layout_marginTop="68dp"
+        android:background="@color/white"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Name"
-        app:layout_constraintBottom_toTopOf="@+id/Snapbtn"
+        android:paddingLeft="10dp"
+        android:text="Search"
+        android:textColor="@color/secondary_color"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Imagecontainer"
-        app:layout_constraintVertical_bias="0.0" />
+        tools:layout_editor_absoluteY="55dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

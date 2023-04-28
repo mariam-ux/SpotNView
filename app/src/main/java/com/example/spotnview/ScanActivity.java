@@ -22,6 +22,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -36,6 +42,14 @@ import com.google.mlkit.vision.text.TextRecognizer;
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
 import android.os.Bundle;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 public class ScanActivity extends AppCompatActivity {
     private ImageView img;
     private TextView resulttv;
@@ -43,6 +57,8 @@ public class ScanActivity extends AppCompatActivity {
     private Button Detectbtn;
     private Bitmap imageBitMap;
     static final int request_Image_Capture=1;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +86,7 @@ public class ScanActivity extends AppCompatActivity {
 
             }
         });
+
 
 
 
@@ -137,6 +154,7 @@ public class ScanActivity extends AppCompatActivity {
                             result.append(elementText);
 
                         }
+
                         resulttv.setText(blockText);
 
                     }
@@ -151,4 +169,7 @@ public class ScanActivity extends AppCompatActivity {
             }
         });
     }
-    }
+
+
+
+}

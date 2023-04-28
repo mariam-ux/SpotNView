@@ -70,6 +70,8 @@ dependencies {
     implementation('com.journeyapps:zxing-android-embedded:4.3.0') { transitive = false }
     implementation 'com.google.zxing:core:3.4.1'
 
+
+
     //nav
     def nav_version = "2.3.5"
     //noinspection GradleDependency
@@ -77,6 +79,10 @@ dependencies {
     //noinspection GradleDependency
     implementation "androidx.navigation:navigation-ui:$nav_version"
 
+    //profile UI
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
+
+    //volley
+    implementation 'com.android.volley:volley:1.2.1'
 }
