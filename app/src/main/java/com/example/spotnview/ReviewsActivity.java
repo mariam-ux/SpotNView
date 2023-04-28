@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -23,6 +25,8 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReviewsActivity extends BaseActivity {
     private String targetText;
@@ -30,13 +34,21 @@ public class ReviewsActivity extends BaseActivity {
     protected int getContentViewId() {
         return R.layout.activity_reviews;
     }
-
-
+    private TextView text;
+    private String placeId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reviews);
 
+        Intent intent = getIntent();
+        String detectedText = intent.getStringExtra("detectedText");
+        if (detectedText != null) {
+            int length = detectedText.length();
+            Toast.makeText(this, "not null text", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "null text", Toast.LENGTH_SHORT).show();
+        }
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
@@ -47,42 +59,65 @@ public class ReviewsActivity extends BaseActivity {
 
         //handle the review http requests
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        //Create an HTTP request using Volley to the Place Autocomplete endpoint
-        String apiKey = "AIzaSyC1kLAxNb5eoqhFd698mhDphVuxdPDX-KE";
+        String apiKey = getString(R.string.API_KEY);
         String encodedInput = null;
         try {
-            encodedInput = URLEncoder.encode(targetText, "UTF-8");
+            encodedInput = URLEncoder.encode(detectedText, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        String url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=" +
+
+
+        String autocompleteUrl = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=" +
                 encodedInput +
                 "&key=" + apiKey;
-
-        //Make the request and handle the response
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, autocompleteUrl ,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        // Handle the autocomplete response here
                         try {
                             JSONObject jsonObject = new JSONObject(response);
-                            JSONArray reviews = jsonObject.getJSONArray("reviews");
-                            if (reviews.length() > 0) {
-                                JSONObject place = reviews.getJSONObject(0);
-                                String placeId = place.getString("place_id");
-                                // Use the placeId for further operations
-                                for (int i = 0; i < reviews.length(); i++) {
-                                    JSONObject review = reviews.getJSONObject(i);
+                            JSONArray predictions = jsonObject.getJSONArray("predictions");
+                            if (predictions.length() > 0) {
+                                JSONObject place = predictions.getJSONObject(0);
+                                placeId = place.getString("place_id"); // Assign the placeId to the member variable
+                                String placeDetailsUrl = "https://maps.googleapis.com/maps/api/place/details/json?place_id=" +
+                                        placeId +
+                                        "&key=" + apiKey;
+                                //retrieve the reviews
+                                StringRequest stringRequest = new StringRequest(Request.Method.GET, placeDetailsUrl,
+                                        new Response.Listener<String>() {
+                                            @Override
+                                            public void onResponse(String response) {
+                                                try {
+                                                    JSONObject jsonObject = new JSONObject(response);
+                                                    JSONObject result = jsonObject.getJSONObject("result");
+                                                    JSONArray reviews = result.getJSONArray("reviews");
 
-                                    // Extract relevant information from the review
-                                    String authorName = review.getString("author_name");
-                                    int rating = review.getInt("rating");
-                                    String reviewText = review.getString("text");
+                                                    List<String> reviewList = new ArrayList<>();
+                                                    for (int i = 0; i < reviews.length(); i++) {
+                                                        JSONObject review = reviews.getJSONObject(i);
+                                                        String reviewText = review.getString("text");
+                                                        reviewList.add(reviewText);
+                                                    }
 
-                                    // Do something with the review information
-                                    // e.g., store it in a list or display it in your app's UI
-                                }
+                                                    // Handle the retrieved reviews
+                                                    // You can access the reviewList here and do further processing or display them in your activity
+
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        },
+                                        new Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+                                                // Handle the error here
+                                            }
+                                        });
+
+                                requestQueue.add(stringRequest);
+
                             } else {
                                 // No predictions found for the restaurant name
                             }
@@ -99,6 +134,8 @@ public class ReviewsActivity extends BaseActivity {
                 });
 
         requestQueue.add(stringRequest);
+
+        // You can now use the placeId in the onCreate() method or other methods in your activity
 
         //Parse the response and extract the place_id
         //Inside the onResponse() method, you can parse the JSON response and extract the place_id for the restaurant

@@ -5,7 +5,6 @@ import static android.Manifest.permission.CAMERA;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -16,39 +15,23 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.mlkit.vision.common.InputImage;
 
-import com.google.firebase.ml.vision.FirebaseVision;
-import com.google.firebase.ml.vision.common.FirebaseVisionImage;
-import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 import com.google.mlkit.vision.text.Text;
 import com.google.mlkit.vision.text.TextRecognition;
 import com.google.mlkit.vision.text.TextRecognizer;
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
-import android.os.Bundle;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 public class ScanActivity extends AppCompatActivity {
     private ImageView img;
@@ -57,7 +40,8 @@ public class ScanActivity extends AppCompatActivity {
     private Button Detectbtn;
     private Bitmap imageBitMap;
     static final int request_Image_Capture=1;
-
+    private ImageButton searchBtn;
+    private String searchText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +51,19 @@ public class ScanActivity extends AppCompatActivity {
         resulttv=findViewById(R.id.textdetedcted);
         Snapbtn=findViewById(R.id.Snapbtn);
         Detectbtn=findViewById(R.id.dbtn);
+        //search button
+        searchBtn = findViewById(R.id.searchBTN);
 
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Editable editable = (Editable) resulttv.getText();
+                String searchText = editable != null ? editable.toString() : "";
+                Intent intent = new Intent(ScanActivity.this, ReviewsActivity.class);
+                intent.putExtra("detectedText", searchText);
+                startActivity(intent);
+            }
+        });
         Detectbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
