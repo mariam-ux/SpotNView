@@ -10,10 +10,30 @@
         android:id="@+id/btn_scanner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_below="@+id/resQrViewer"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="163dp"
+        android:layout_marginTop="98dp"
+        android:layout_marginEnd="160dp"
+        android:layout_marginBottom="254dp"
         android:text="Scan"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/resQrViewer"
+        android:layout_width="192dp"
+        android:layout_height="77dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="110dp"
+        android:layout_marginTop="181dp"
+        android:layout_marginEnd="109dp"
+        android:text="THE RESULT ILL BE SHOWN HERE " />
+
 </RelativeLayout>
