@@ -22,7 +22,10 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -34,6 +37,8 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
@@ -54,7 +59,9 @@ public class ReviewsActivity extends BaseActivity {
     private String userAddress;
 
     private static final int REQUEST_LOCATION_PERMISSION = 1;
-
+    private String detectedText;
+    int durationInMinutes = 10;
+    Duration duration = Duration.ofMinutes(durationInMinutes);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +82,7 @@ public class ReviewsActivity extends BaseActivity {
         reviewsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         Intent intent = getIntent();
-        String detectedText = intent.getStringExtra("detectedText");
+        detectedText = intent.getStringExtra("detectedText");
         if (detectedText != null) {
             int length = detectedText.length();
             Toast.makeText(this, "not null text", Toast.LENGTH_SHORT).show();
@@ -174,6 +181,7 @@ public class ReviewsActivity extends BaseActivity {
 
             System.setProperty("webdriver.chrome.driver", "C:\\Users\\user\\AndroidStudioProjects\\SpotNView\\chromedriver.exe");
             ChromeOptions chromeOptions = new ChromeOptions();
+            chromeOptions.addArguments("--lang=en");
             DesiredCapabilities capabilities = new DesiredCapabilities();
             capabilities.setBrowserName("chrome");
             capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
@@ -187,22 +195,65 @@ public class ReviewsActivity extends BaseActivity {
 
             try {
 
+
                 // Navigate to Google Maps
                 driver.get("https://maps.google.com");
 
                 // Search for the restaurant
                 WebElement searchBox = driver.findElement(By.name("q"));
-                searchBox.sendKeys("Restaurant Name");
+                searchBox.sendKeys(detectedText + retrieveUserAddress(ReviewsActivity.this));
                 searchBox.submit();
 
 
-                // Access the reviews
-                WebElement reviewElement = driver.findElement(By.className(""));
-                // Iterate over the review elements and extract the desired information
+                // locate the parent element
+                WebDriverWait wait = new WebDriverWait(driver, duration);
+                WebElement parentElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='sbsb_b']")));
+// locate the child elements and sort them based on their y-coordinate
+                List<WebElement> childElements = parentElement.findElements(By.xpath("./div"));
+                childElements.sort(new Comparator<WebElement>() {
+                    @Override
+                    public int compare(WebElement e1, WebElement e2) {
+                        Integer y1 = e1.getLocation().getY();
+                        Integer y2 = e2.getLocation().getY();
+                        return y1.compareTo(y2);
+                    }
+                });
+
+                // click the first child element
+                WebElement firstChildElement = childElements.get(0);
+                firstChildElement.click();
+
+                WebDriverWait wait2 = new WebDriverWait(driver, duration);
+                // Click on the "Reviews" tab to view the restaurant's reviews
+                WebElement reviewsBar = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='RWPxGd']")));
+                List<WebElement> reviewBarChild = reviewsBar.findElements(By.xpath("./button"));
+
+                reviewBarChild.sort(new Comparator<WebElement>() {
+                    @Override
+                    public int compare(WebElement e1, WebElement e2) {
+                        Integer y1 = e1.getLocation().getY();
+                        Integer y2 = e2.getLocation().getY();
+                        return y1.compareTo(y2);
+                    }
+                });
+
+                WebElement reviewBtn = reviewBarChild.get(1);
+                reviewBtn.click();
+
+                WebDriverWait wait3 = new WebDriverWait(driver, duration);
+                // Print the text of each review
+                List<WebElement> reviews = driver.findElements(By.xpath("//div[@class='jftiEf']"));
+                for (WebElement review : reviews) {
+                    WebElement userName = review.findElement(By.xpath("//div[@class='d4r55']"));
+                    WebElement reviewText = review.findElement(By.xpath("//div[@class='WiI7pd']"));
+
+                    Review review1 = new Review(userName.getText(), reviewText.getText());
+                    reviewList.add(review1);
+                }
 
             }finally {
                 // Close the driver
-                driver.quit();
+                /*driver.quit();*/
             }
         }
     }

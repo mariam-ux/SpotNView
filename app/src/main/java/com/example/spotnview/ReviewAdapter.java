@@ -35,7 +35,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewViewHolder>{
 
         // Bind the data to the views in the ViewHolder
         holder.reviewText.setText(review.getReviewText());
-        holder.ratingBar.setRating(review.getRating());
+
         holder.userName.setText(review.getUserName());
     }
 
