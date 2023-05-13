@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -187,7 +188,7 @@ public class ReviewsActivity extends BaseActivity {
             capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
             URL seleniumGridUrl = null;
             try {
-                seleniumGridUrl = new URL("http://172.23.112.1:4444/wd/hub");
+                seleniumGridUrl = new URL("http://192.168.0.112:4444/wd/hub");
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }
@@ -208,7 +209,7 @@ public class ReviewsActivity extends BaseActivity {
                 // locate the parent element
                 WebDriverWait wait = new WebDriverWait(driver, duration);
                 WebElement parentElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='sbsb_b']")));
-// locate the child elements and sort them based on their y-coordinate
+                // locate the child elements and sort them based on their y-coordinate
                 List<WebElement> childElements = parentElement.findElements(By.xpath("./div"));
                 childElements.sort(new Comparator<WebElement>() {
                     @Override
@@ -239,21 +240,42 @@ public class ReviewsActivity extends BaseActivity {
 
                 WebElement reviewBtn = reviewBarChild.get(1);
                 reviewBtn.click();
-
+                Log.d("step1", "review button clicked successfully");
                 WebDriverWait wait3 = new WebDriverWait(driver, duration);
                 // Print the text of each review
-                List<WebElement> reviews = driver.findElements(By.xpath("//div[@class='jftiEf']"));
-                for (WebElement review : reviews) {
+                List<WebElement> reviewsParent = wait3.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector("div.jJc9Ad")));
+                Log.d("step2", "review parent div success");
+
+                for(WebElement reviewParent : reviewsParent){
+                    WebElement userName = reviewParent.findElement(By.cssSelector("div.d4r55"));
+                    WebElement reviewText = reviewParent.findElement(By.cssSelector("span.wiI7pd"));
+                    Log.d("step3", "retrieving the reviews");
+                    Review review = new Review(userName.getText(), reviewText.getText());
+                    reviewList.add(review);
+                    Log.d("step4", review.getReviewText());
+                    runOnUiThread(new Runnable() {
+                        @SuppressLint("NotifyDataSetChanged")
+                        @Override
+                        public void run() {
+                            reviewAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+
+
+
+                /*for (WebElement review : reviews) {
                     WebElement userName = review.findElement(By.xpath("//div[@class='d4r55']"));
                     WebElement reviewText = review.findElement(By.xpath("//div[@class='WiI7pd']"));
-
+                    Log.d("userName", userName.getText());
+                    Log.d("review", reviewText.getText());
                     Review review1 = new Review(userName.getText(), reviewText.getText());
                     reviewList.add(review1);
-                }
+                }*/
 
             }finally {
                 // Close the driver
-                /*driver.quit();*/
+                driver.quit();
             }
         }
     }
