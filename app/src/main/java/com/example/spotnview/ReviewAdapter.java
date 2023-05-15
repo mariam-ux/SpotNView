@@ -1,5 +1,7 @@
 package com.example.spotnview;
 
+import android.annotation.SuppressLint;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +26,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewViewHolder>{
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.review_item, parent, false);
         return new ReviewViewHolder(itemView);
     }
+    @SuppressLint("NotifyDataSetChanged")
     public void setData(List<Review> reviewList) {
         this.reviewList = reviewList;
         notifyDataSetChanged();
@@ -32,11 +35,12 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewViewHolder>{
     public void onBindViewHolder(@NonNull ReviewViewHolder holder, int position) {
         // Bind the data to the views in the ViewHolder
         Review review = reviewList.get(position);
-
         // Bind the data to the views in the ViewHolder
         holder.reviewText.setText(review.getReviewText());
-
         holder.userName.setText(review.getUserName());
+        RatingBar ratingBar = holder.ratingBar;
+        ratingBar.setRating(review.getRatingBar().getRating());
+        Log.d("ReviewAdapter", "onBindViewHolder - Position: " + position);
     }
 
     @Override

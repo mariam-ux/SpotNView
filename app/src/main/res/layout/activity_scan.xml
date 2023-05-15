@@ -25,7 +25,7 @@
         android:id="@+id/Imagecontainer"
         android:layout_width="222dp"
         android:layout_height="173dp"
-        android:layout_marginTop="96dp"
+        android:layout_marginTop="72dp"
         android:background="#80FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
@@ -63,15 +63,17 @@
         android:id="@+id/textdetedcted"
         android:layout_width="282dp"
         android:layout_height="59dp"
+        android:layout_marginTop="68dp"
         android:background="@color/white"
         android:ems="10"
         android:inputType="textPersonName"
-        android:paddingLeft="10dp"
-        android:text="Search"
+        android:paddingStart="10dp"
         android:textColor="@color/secondary_color"
+        android:hint="Search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="55dp" />
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

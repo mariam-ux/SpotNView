@@ -16,6 +16,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -198,7 +200,7 @@ public class ReviewsActivity extends BaseActivity {
 
 
                 // Navigate to Google Maps
-                driver.get("https://maps.google.com");
+                driver.get("https://maps.google.com/?hl=en");
 
                 // Search for the restaurant
                 WebElement searchBox = driver.findElement(By.name("q"));
@@ -249,33 +251,42 @@ public class ReviewsActivity extends BaseActivity {
                 for(WebElement reviewParent : reviewsParent){
                     WebElement userName = reviewParent.findElement(By.cssSelector("div.d4r55"));
                     WebElement reviewText = reviewParent.findElement(By.cssSelector("span.wiI7pd"));
+                    WebElement rate = reviewParent.findElement(By.cssSelector("span.kvMYJc"));
+
+
+                    String ariaLabel = rate.getAttribute("aria-label");
+                    Log.d("arial-label", ariaLabel);
+                    String ratingValue = ariaLabel.replaceAll("[^\\d.]", "");
+
+                    Log.d("rate", ratingValue);
                     Log.d("step3", "retrieving the reviews");
-                    Review review = new Review(userName.getText(), reviewText.getText());
+                    float rating = Float.parseFloat(ratingValue);
+                    Log.d("float rating", String.valueOf(rating));
+
+                    RatingBar ratingBar = new RatingBar(ReviewsActivity.this);
+                    ratingBar.setRating(rating);
+                    ratingBar.setIsIndicator(false);
+                    Log.d("get rating", String.valueOf(ratingBar.getRating()));
+                    Review review = new Review(userName.getText(), reviewText.getText(), ratingBar );
                     reviewList.add(review);
                     Log.d("step4", review.getReviewText());
-                    runOnUiThread(new Runnable() {
-                        @SuppressLint("NotifyDataSetChanged")
-                        @Override
-                        public void run() {
-                            reviewAdapter.notifyDataSetChanged();
-                        }
-                    });
+
                 }
+                Log.d("list size", String.valueOf(reviewList.size()));
 
+                runOnUiThread(new Runnable() {
+                    @SuppressLint("NotifyDataSetChanged")
+                    @Override
+                    public void run() {
 
-
-                /*for (WebElement review : reviews) {
-                    WebElement userName = review.findElement(By.xpath("//div[@class='d4r55']"));
-                    WebElement reviewText = review.findElement(By.xpath("//div[@class='WiI7pd']"));
-                    Log.d("userName", userName.getText());
-                    Log.d("review", reviewText.getText());
-                    Review review1 = new Review(userName.getText(), reviewText.getText());
-                    reviewList.add(review1);
-                }*/
+                        reviewAdapter.setData(reviewList);
+                        reviewAdapter.notifyDataSetChanged();
+                    }
+                });
 
             }finally {
                 // Close the driver
-                driver.quit();
+                /*driver.quit();*/
             }
         }
     }

@@ -21,9 +21,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/reviewsRecycler"
-        android:layout_width="390dp"
-        android:layout_height="655dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        android:layout_width="405dp"
+        android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
