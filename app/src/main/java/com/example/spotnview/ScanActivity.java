@@ -9,6 +9,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Point;
@@ -59,6 +60,10 @@ public class ScanActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Editable editable = (Editable) resulttv.getText();
                 String searchText = editable != null ? editable.toString() : "";
+                SharedPreferences sharedPrefs = getSharedPreferences("MyPrefs", ScanActivity.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPrefs.edit();
+                editor.putBoolean("shouldStartWebDriver", true);
+                editor.apply();
                 Intent intent = new Intent(ScanActivity.this, ReviewsActivity.class);
                 intent.putExtra("detectedText", searchText);
                 startActivity(intent);

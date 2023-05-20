@@ -41,6 +41,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewViewHolder>{
         RatingBar ratingBar = holder.ratingBar;
         ratingBar.setRating(review.getRatingBar().getRating());
         Log.d("ReviewAdapter", "onBindViewHolder - Position: " + position);
+        holder.reviewDate.setText(review.getReviewDate());
     }
 
     @Override
