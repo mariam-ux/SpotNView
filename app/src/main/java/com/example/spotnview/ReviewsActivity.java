@@ -49,6 +49,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 
+
 public class ReviewsActivity extends BaseActivity {
     private String targetText;
     @Override
@@ -71,6 +72,7 @@ public class ReviewsActivity extends BaseActivity {
     private TextView avgRate;
     private Button addBtn;
     private Boolean shouldStartWebDriver;
+
     @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,29 +97,18 @@ public class ReviewsActivity extends BaseActivity {
         addBtn = findViewById(R.id.addBtn);
         Intent intent = getIntent();
         detectedText = intent.getStringExtra("detectedText");
-        if (detectedText != null) {
-            int length = detectedText.length();
-            Toast.makeText(this, "not null text", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "null text", Toast.LENGTH_SHORT).show();
+
+
+        if (!CacheManager.isCacheExpired(ReviewsActivity.this) && CacheManager.getReviews(ReviewsActivity.this) != null) {
+            // Retrieve the reviews from the cache
+            List<Review> reviews = CacheManager.getReviews(ReviewsActivity.this);
+            // Use the retrieved reviews
+            reviewList.addAll(reviews);
+            reviewAdapter.setData(reviewList);
+            reviewAdapter.notifyDataSetChanged();
         }
 
-        SharedPreferences sharedPreferences = getSharedPreferences("Reviews", Context.MODE_PRIVATE);
-        @SuppressLint("CommitPrefEdits") SharedPreferences.Editor editor = sharedPreferences.edit();
-        String userName = sharedPreferences.getString("userName", "");
-        String reviewText = sharedPreferences.getString("reviewText", "");
-        float rating = sharedPreferences.getFloat("rating", 0.0f);
-        String reviewDate = sharedPreferences.getString("reviewDate", "");
-        RatingBar ratingBar = new RatingBar(ReviewsActivity.this);
-        ratingBar.setRating(rating);
-        ratingBar.setIsIndicator(false);
-        // Create Review object and add it to the list
-        Review reviewItem = new Review(userName, reviewText, ratingBar, reviewDate);
-        reviewList.add(reviewItem);
 
-        // Set the data to the adapter and notify the adapter
-        reviewAdapter.setData(reviewList);
-        reviewAdapter.notifyDataSetChanged();
         SharedPreferences sharedPrefs = getSharedPreferences("MyPrefs", ScanActivity.MODE_PRIVATE);
         shouldStartWebDriver = sharedPrefs.getBoolean("shouldStartWebDriver", true);
 
@@ -187,8 +178,7 @@ public class ReviewsActivity extends BaseActivity {
                  });
 
             } else {
-                // Location permissions denied, handle accordingly (e.g., show a message)
-                // ...
+                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -220,8 +210,7 @@ public class ReviewsActivity extends BaseActivity {
                             if (callback != null) {
                                 callback.onAddressReceived(userAddress);
                             }
-                            // Use the userAddress to specify the branch of the restaurant or perform any other required action
-                            // ...
+
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -349,9 +338,6 @@ public class ReviewsActivity extends BaseActivity {
                 List<WebElement> reviewsParent = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector("div.jJc9Ad")));
                 Log.d("step2", "review parent div success");
 
-                //creating a sharedPreferences to save the reviews in case the user was not signed in and navigated to another activity
-                SharedPreferences sharedPreferences = getSharedPreferences("Reviews", Context.MODE_PRIVATE);
-                @SuppressLint("CommitPrefEdits") SharedPreferences.Editor editor = sharedPreferences.edit();
 
                 for(WebElement review : reviewsParent){
                     String reviewTextRetrieve = "";
@@ -380,22 +366,19 @@ public class ReviewsActivity extends BaseActivity {
                     ratingBar.setIsIndicator(false);
                     Log.d("get rating", String.valueOf(ratingBar.getRating()));
 
-                    // Store the review details in SharedPreferences
-                    editor.putString("userName", userName.getText());
-                    editor.putString("reviewText", reviewTextRetrieve);
-                    editor.putFloat("rating", rating);
-                    editor.putString("reviewDate", reviewdate.getText());
-                    editor.apply();
 
                     Review reviewItem = new Review(userName.getText(), reviewTextRetrieve, ratingBar, reviewdate.getText() );
                     reviewList.add(reviewItem);
                     Log.d("step4", reviewItem.getReviewText());
-                    // Load reviews from SharedPreferences
+                    //save the reviews to the cache
+                    CacheManager.saveReviews(ReviewsActivity.this, reviewList);
+
+
                     SharedPreferences sharedPrefs = getSharedPreferences("MyPrefs", ScanActivity.MODE_PRIVATE);
                     shouldStartWebDriver = false;
-                    @SuppressLint("CommitPrefEdits") SharedPreferences.Editor editor2 = sharedPrefs.edit();
-                    editor2.putBoolean("shouldStartWebDriver", false);
-                    editor2.apply();
+                    @SuppressLint("CommitPrefEdits") SharedPreferences.Editor editor = sharedPrefs.edit();
+                    editor.putBoolean("shouldStartWebDriver", false);
+                    editor.apply();
                     Log.d("shouldStartWebDriver", Boolean.toString(shouldStartWebDriver));
 
                 }

@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -64,6 +65,8 @@ public class ScanActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = sharedPrefs.edit();
                 editor.putBoolean("shouldStartWebDriver", true);
                 editor.apply();
+                SharedPreferences sharedPreferences = getSharedPreferences("Reviews", Context.MODE_PRIVATE);
+
                 Intent intent = new Intent(ScanActivity.this, ReviewsActivity.class);
                 intent.putExtra("detectedText", searchText);
                 startActivity(intent);
