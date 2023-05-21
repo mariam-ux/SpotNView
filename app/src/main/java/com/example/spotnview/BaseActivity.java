@@ -84,9 +84,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BottomNa
                 }
             }, 1000);
         }
-
         return true;
-
     }
 
     protected abstract int getContentViewId();

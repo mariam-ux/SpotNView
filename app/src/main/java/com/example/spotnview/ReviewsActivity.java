@@ -26,7 +26,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
@@ -36,6 +41,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -56,8 +64,7 @@ public class ReviewsActivity extends BaseActivity {
     protected int getContentViewId() {
         return R.layout.activity_reviews;
     }
-    private TextView text;
-    private String placeId;
+
     private List<Review> reviewList = new ArrayList<>();
 
 
@@ -72,7 +79,7 @@ public class ReviewsActivity extends BaseActivity {
     private TextView avgRate;
     private Button addBtn;
     private Boolean shouldStartWebDriver;
-
+    private ReviewDaoImp reviewDao;
     @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,20 +105,17 @@ public class ReviewsActivity extends BaseActivity {
         Intent intent = getIntent();
         detectedText = intent.getStringExtra("detectedText");
 
+        SharedPreferences sharedPrefs = getSharedPreferences("MyPrefs", ScanActivity.MODE_PRIVATE);
+        shouldStartWebDriver = sharedPrefs.getBoolean("shouldStartWebDriver", true);
+        reviewDao = new ReviewDaoImp(this);
 
-        if (!CacheManager.isCacheExpired(ReviewsActivity.this) && CacheManager.getReviews(ReviewsActivity.this) != null) {
-            // Retrieve the reviews from the cache
-            List<Review> reviews = CacheManager.getReviews(ReviewsActivity.this);
-            // Use the retrieved reviews
-            reviewList.addAll(reviews);
+        List<Review> review_db = reviewDao.getAllReviews();
+        if(!review_db.isEmpty()) {
+            Log.d("reviewCache", "review cache is not null");
+            reviewList.addAll(review_db);
             reviewAdapter.setData(reviewList);
             reviewAdapter.notifyDataSetChanged();
         }
-
-
-        SharedPreferences sharedPrefs = getSharedPreferences("MyPrefs", ScanActivity.MODE_PRIVATE);
-        shouldStartWebDriver = sharedPrefs.getBoolean("shouldStartWebDriver", true);
-
         if(shouldStartWebDriver) {
             performLocationOperation(ReviewsActivity.this);
         }
@@ -263,7 +267,6 @@ public class ReviewsActivity extends BaseActivity {
 
             try {
 
-
                 // Navigate to Google Maps
                 driver.get("https://maps.google.com/?hl=en");
 
@@ -369,9 +372,11 @@ public class ReviewsActivity extends BaseActivity {
 
                     Review reviewItem = new Review(userName.getText(), reviewTextRetrieve, ratingBar, reviewdate.getText() );
                     reviewList.add(reviewItem);
+                    reviewDao.addReview(reviewItem);
                     Log.d("step4", reviewItem.getReviewText());
+                    Log.d("add review to db", reviewItem.getReviewText());
                     //save the reviews to the cache
-                    CacheManager.saveReviews(ReviewsActivity.this, reviewList);
+
 
 
                     SharedPreferences sharedPrefs = getSharedPreferences("MyPrefs", ScanActivity.MODE_PRIVATE);
@@ -382,6 +387,9 @@ public class ReviewsActivity extends BaseActivity {
                     Log.d("shouldStartWebDriver", Boolean.toString(shouldStartWebDriver));
 
                 }
+
+
+
                 Log.d("list size", String.valueOf(reviewList.size()));
 
                 runOnUiThread(new Runnable() {
@@ -391,6 +399,10 @@ public class ReviewsActivity extends BaseActivity {
 
                         reviewAdapter.setData(reviewList);
                         reviewAdapter.notifyDataSetChanged();
+
+
+
+
                     }
                 });
 

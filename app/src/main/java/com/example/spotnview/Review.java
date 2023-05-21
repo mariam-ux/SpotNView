@@ -3,8 +3,10 @@ package com.example.spotnview;
 import android.widget.RatingBar;
 
 import java.awt.font.TextAttribute;
+import java.io.Serializable;
 
-public class Review {
+
+public class Review implements Serializable{
     private String reviewText;
     private String userName;
     private RatingBar ratingBar;
