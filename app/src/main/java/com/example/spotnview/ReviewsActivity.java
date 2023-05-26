@@ -40,6 +40,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -74,12 +76,13 @@ public class ReviewsActivity extends BaseActivity {
 
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     private String detectedText;
-    Duration duration = Duration.ofSeconds(20);
+    Duration duration = Duration.ofSeconds(60);
     private String searchedText;
     private TextView avgRate;
     private Button addBtn;
     private Boolean shouldStartWebDriver;
     private ReviewDaoImp reviewDao;
+    private Timer reviewClearTimer;
     @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -251,7 +254,6 @@ public class ReviewsActivity extends BaseActivity {
         @Override
         public void run() {
 
-            System.setProperty("webdriver.chrome.driver", "C:\\Users\\user\\AndroidStudioProjects\\SpotNView\\chromedriver.exe");
             ChromeOptions chromeOptions = new ChromeOptions();
             chromeOptions.addArguments("--lang=en");
             DesiredCapabilities capabilities = new DesiredCapabilities();
@@ -259,7 +261,7 @@ public class ReviewsActivity extends BaseActivity {
             capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
             URL seleniumGridUrl = null;
             try {
-                seleniumGridUrl = new URL(" http://192.168.0.102:4444/wd/hub");
+                seleniumGridUrl = new URL("http://192.168.0.105:5555/wd/hub");
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }
@@ -372,7 +374,18 @@ public class ReviewsActivity extends BaseActivity {
 
                     Review reviewItem = new Review(userName.getText(), reviewTextRetrieve, ratingBar, reviewdate.getText() );
                     reviewList.add(reviewItem);
+                    if (reviewClearTimer != null) {
+                        reviewClearTimer.cancel();
+                    }
                     reviewDao.addReview(reviewItem);
+                    reviewClearTimer = new Timer();
+                    reviewClearTimer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            reviewDao.deleteAllReviews();
+                            Log.d("reviewCache", "Reviews cleared after 2 hours");
+                        }
+                    }, 2 * 60 * 60 * 1000); // 2 hours in milliseconds
                     Log.d("step4", reviewItem.getReviewText());
                     Log.d("add review to db", reviewItem.getReviewText());
                     //save the reviews to the cache

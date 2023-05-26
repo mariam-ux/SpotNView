@@ -5,13 +5,14 @@ buildscript {
         // Make sure that you have the following two repositories
         google()  // Google's Maven repository
         mavenCentral()  // Maven Central repository
+        //maven { url 'https://maven.fabric.io/public' }
 
     }
     dependencies {
 
         // Add the dependency for the Google services Gradle plugin
         classpath 'com.google.gms:google-services:4.3.15'
-
+        //classpath 'io.fabric.tools:gradle:1.31.2'
     }
 }
 plugins {

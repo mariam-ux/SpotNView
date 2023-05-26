@@ -59,7 +59,7 @@ public class ReviewDatabase extends SQLiteOpenHelper{
 
     public List<Review> getAllReviews(Context context) {
         List<Review> reviewList = new ArrayList<>();
-        String selectQuery = "SELECT * FROM " + TABLE_NAME;
+        String selectQuery = "SELECT * FROM " + TABLE_NAME ;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -69,7 +69,7 @@ public class ReviewDatabase extends SQLiteOpenHelper{
                 @SuppressLint("Range") String reviewText = cursor.getString(cursor.getColumnIndex(KEY_TEXT));
                 @SuppressLint("Range") float rating = cursor.getFloat(cursor.getColumnIndex(KEY_RATING));
                 @SuppressLint("Range") String reviewDate = cursor.getString(cursor.getColumnIndex(KEY_DATE));
-                RatingBar ratingBar = new RatingBar(context);  // Provide the appropriate context
+                RatingBar ratingBar = new RatingBar(context); // Provide the appropriate context
                 ratingBar.setRating(rating);
                 Review review = new Review(userName, reviewText, ratingBar, reviewDate);
                 reviewList.add(review);

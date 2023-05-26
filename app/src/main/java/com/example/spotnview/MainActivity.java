@@ -51,11 +51,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 
+
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
+
+
 import java.util.Arrays;
 
 public class MainActivity extends BaseActivity {
@@ -70,6 +73,7 @@ public class MainActivity extends BaseActivity {
     private Button facebookBtn;
     private TextView signedIn;
 
+
     @Override
     protected int getContentViewId() {
         return R.layout.activity_main;
@@ -79,7 +83,6 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
 
 
@@ -104,6 +107,7 @@ public class MainActivity extends BaseActivity {
             FirebaseUser currentUser = mAuth.getCurrentUser();
             updateUI(currentUser);
         }
+
 
         //setting the fb sign-in bottom
         facebookBtn = findViewById(R.id.fbBtn);
@@ -323,6 +327,7 @@ public class MainActivity extends BaseActivity {
 
 
     }
+
 
 
     private void firebaseAuthWithGoogle(String idToken) {

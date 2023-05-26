@@ -19,4 +19,8 @@
     <string name="API_KEY">AIzaSyC1kLAxNb5eoqhFd698mhDphVuxdPDX-KE</string>
     <string name="signInNote">sign-in to save your reviews to the history.</string>
     <string name="avgRate">Average Rating</string>
+    <string name="singin_twitter">Sign_in by Twitter</string>
+    <string name="twitter_token">mBzoeZxp1PcC1PvbzPhDNQiy2</string>
+    <string name="twitter_secret">ihiZd985KkwAnf4WNGAlqmdHKPXuUywMsYPVz1KgL45gaB1nJs</string>
+
 </resources>
