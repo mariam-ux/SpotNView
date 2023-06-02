@@ -22,5 +22,10 @@
     <string name="singin_twitter">Sign_in by Twitter</string>
     <string name="twitter_token">mBzoeZxp1PcC1PvbzPhDNQiy2</string>
     <string name="twitter_secret">ihiZd985KkwAnf4WNGAlqmdHKPXuUywMsYPVz1KgL45gaB1nJs</string>
-
+    <string name="home_string">CLick <b bold="capture">CAPTURE</b> to scan a photo for a text, or <b bold="qr scan">QR SCAN</b> to scan a QR code.</string>
+    <string name="capture_string">Click <b bold="snap">SNAP</b> to take your picture then click <b bold="detect">Detect</b> to scan it for text.</string>
+    <string name="capture_note">You can edit the text detected, or manually enter the text you want.</string>
+    <string name="qr_scan_string">Click <b>SCAN </b> to scan the QR Code</string>
+    <string name="qrscan_result">QR code Result</string>
+    <string name="review_note">You can search for your reviews in the <b>Home Page.</b></string>
 </resources>

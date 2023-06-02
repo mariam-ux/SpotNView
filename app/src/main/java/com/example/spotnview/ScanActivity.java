@@ -66,7 +66,6 @@ public class ScanActivity extends AppCompatActivity {
                 editor.putBoolean("shouldStartWebDriver", true);
                 editor.apply();
                 SharedPreferences sharedPreferences = getSharedPreferences("Reviews", Context.MODE_PRIVATE);
-
                 Intent intent = new Intent(ScanActivity.this, ReviewsActivity.class);
                 intent.putExtra("detectedText", searchText);
                 startActivity(intent);

@@ -3,22 +3,26 @@
 
     <item
         android:id="@+id/navigation_home"
-        android:icon="@android:drawable/btn_star"
+        android:icon="@drawable/home"
+        android:iconTint="@color/mango"
         android:title="@string/title_home" />
 
     <item
         android:id="@+id/navigation_reviews"
         android:icon="@android:drawable/btn_star"
+        android:iconTint="@color/mango"
         android:title="@string/title_reviews" />
 
     <item
         android:id="@+id/navigation_history"
-        android:icon="@android:drawable/btn_star"
+        android:icon="@drawable/openbook"
+        android:iconTint="@color/mango"
         android:title="@string/title_history" />
 
     <item
         android:id="@+id/navigation_signin"
-        android:icon="@android:drawable/btn_star"
+        android:icon="@drawable/profileuser"
+        android:iconTint="@color/primary_color"
         android:title="@string/title_signin" />
 
 </menu>

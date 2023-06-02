@@ -248,7 +248,7 @@ public class MainActivity extends BaseActivity {
         profileImageView.setImageDrawable(null); // Remove the image
 
 // Set the default profile picture as a placeholder
-        int placeholderResourceId = R.drawable.profile; // Replace with the resource ID of your default profile picture
+        int placeholderResourceId = R.drawable.profileuser2; // Replace with the resource ID of your default profile picture
         profileImageView.setImageResource(placeholderResourceId);
 
 
@@ -458,7 +458,7 @@ public class MainActivity extends BaseActivity {
 
             ImageView profileImageView = findViewById(R.id.profileImageView);
             profileImageView.setImageDrawable(null); // Set the placeholder image resource
-            int placeholderResourceId = R.drawable.profile; // Replace with the resource ID of your default profile picture
+            int placeholderResourceId = R.drawable.profileuser2; // Replace with the resource ID of your default profile picture
             profileImageView.setImageResource(placeholderResourceId);
         }
 

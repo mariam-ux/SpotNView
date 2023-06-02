@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#040303"
+    android:backgroundTint="@color/ligh_blue"
     tools:context=".ReviewsActivity">
 
 
@@ -11,7 +13,7 @@
         android:id="@+id/bottom_navigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/secondary_color"
         app:itemTextColor="@color/black"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -22,10 +24,11 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/reviewsRecycler"
-        android:layout_width="392dp"
-        android:layout_height="555dp"
-        android:layout_marginTop="100dp"
+        android:layout_width="408dp"
+        android:layout_height="495dp"
+        android:layout_marginTop="104dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,31 +36,32 @@
         android:id="@+id/AvgRate"
         android:layout_width="131dp"
         android:layout_height="49dp"
-        android:layout_marginStart="36dp"
+        android:layout_marginStart="140dp"
         android:layout_marginTop="11dp"
+        android:background="#00F4511E"
+        android:backgroundTint="@color/mango"
         android:text="AVG"
         android:textAlignment="center"
+        android:textColor="@color/light_color"
         android:textSize="34sp"
-        android:textStyle="italic"
+        android:textStyle="bold|italic"
         app:layout_constraintBottom_toTopOf="@+id/reviewsRecycler"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.45" />
 
-    <Button
-        android:id="@+id/addBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="22dp"
-        android:layout_marginEnd="78dp"
-        android:backgroundTint="@color/primary_color"
-        android:text="ADD"
+    <TextView
+        android:id="@+id/reviewNote"
+        android:layout_width="321dp"
+        android:layout_height="79dp"
+        android:layout_marginTop="136dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/review_note"
+        android:textAlignment="center"
         android:textColor="@color/light_color"
-        app:layout_constraintBottom_toTopOf="@+id/reviewsRecycler"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/AvgRate"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.266" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

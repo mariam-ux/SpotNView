@@ -79,16 +79,18 @@ public class ReviewsActivity extends BaseActivity {
     Duration duration = Duration.ofSeconds(60);
     private String searchedText;
     private TextView avgRate;
-    private Button addBtn;
+
     private Boolean shouldStartWebDriver;
     private ReviewDaoImp reviewDao;
     private Timer reviewClearTimer;
+    private TextView reviewNote;
     @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reviews);
 
+        reviewNote = findViewById(R.id.reviewNote);
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
@@ -104,46 +106,39 @@ public class ReviewsActivity extends BaseActivity {
         reviewsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         avgRate = findViewById(R.id.AvgRate);
-        addBtn = findViewById(R.id.addBtn);
+
         Intent intent = getIntent();
         detectedText = intent.getStringExtra("detectedText");
 
         SharedPreferences sharedPrefs = getSharedPreferences("MyPrefs", ScanActivity.MODE_PRIVATE);
         shouldStartWebDriver = sharedPrefs.getBoolean("shouldStartWebDriver", true);
+        SharedPreferences sharedPrefs2 = getSharedPreferences("MyPrefs", BaseActivity.MODE_PRIVATE);
+        shouldStartWebDriver = sharedPrefs2.getBoolean("shouldStartWebDriver", false);
         reviewDao = new ReviewDaoImp(this);
 
         List<Review> review_db = reviewDao.getAllReviews();
         if(!review_db.isEmpty()) {
             Log.d("reviewCache", "review cache is not null");
+            reviewNote.setVisibility(View.GONE);
+            avgRate.setVisibility(View.GONE);
             reviewList.addAll(review_db);
             reviewAdapter.setData(reviewList);
             reviewAdapter.notifyDataSetChanged();
         }
         if(shouldStartWebDriver) {
+            reviewNote.setVisibility(View.GONE);
+            reviewsRecyclerView.setVisibility(View.VISIBLE);
+            avgRate.setVisibility(View.VISIBLE);
+
             performLocationOperation(ReviewsActivity.this);
+        } else {
+            reviewNote.setVisibility(View.VISIBLE);
+            reviewsRecyclerView.setVisibility(View.GONE);
+            avgRate.setVisibility(View.GONE);
+
         }
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        addBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (currentUser == null) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(ReviewsActivity.this);
-                    builder.setTitle("Error");
-                    builder.setMessage("You need to sign in to add texts to the HistoryActivity.");
-                    builder.setPositiveButton("OK", null);
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
-                    Intent intent2 = new Intent(ReviewsActivity.this, MainActivity.class);
-                    startActivity(intent2);
-                    dialog.dismiss();
-                    finish();
-
-                } else {
-                    Toast.makeText(ReviewsActivity.this, "you are signed in", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
 
 
 
