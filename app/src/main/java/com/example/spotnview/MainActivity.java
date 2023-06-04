@@ -205,24 +205,14 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        GraphRequest request = GraphRequest.newMeRequest(
-                AccessToken.getCurrentAccessToken(),
-                new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(JSONObject object, GraphResponse response) {
-                        // Handle the response
-                    }
-                });
+
 
 
 
 
 
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
-        if(acct != null){
-            String personEmial = acct.getEmail();
 
-        }
 
 
 

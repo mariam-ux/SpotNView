@@ -36,7 +36,7 @@
         android:id="@+id/AvgRate"
         android:layout_width="131dp"
         android:layout_height="49dp"
-        android:layout_marginStart="140dp"
+        android:layout_marginStart="44dp"
         android:layout_marginTop="11dp"
         android:background="#00F4511E"
         android:backgroundTint="@color/mango"
@@ -48,7 +48,7 @@
         app:layout_constraintBottom_toTopOf="@+id/reviewsRecycler"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.45" />
+        app:layout_constraintVertical_bias="0.363" />
 
     <TextView
         android:id="@+id/reviewNote"
@@ -62,6 +62,19 @@
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/addBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="29dp"
+        android:layout_marginEnd="70dp"
+        android:backgroundTint="#F4511E"
+        android:text="ADD"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/AvgRate"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

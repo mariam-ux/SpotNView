@@ -1,5 +1,6 @@
 package com.example.spotnview;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.icu.text.SimpleDateFormat;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -37,6 +39,7 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
@@ -57,7 +60,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 public class ReviewsActivity extends BaseActivity {
@@ -84,6 +91,7 @@ public class ReviewsActivity extends BaseActivity {
     private ReviewDaoImp reviewDao;
     private Timer reviewClearTimer;
     private TextView reviewNote;
+    private Button addBtn;
     @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +99,8 @@ public class ReviewsActivity extends BaseActivity {
         setContentView(R.layout.activity_reviews);
 
         reviewNote = findViewById(R.id.reviewNote);
-
+        addBtn = findViewById(R.id.addBtn);
+        addBtn.setVisibility(View.VISIBLE);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         // set the selected item
@@ -117,31 +126,136 @@ public class ReviewsActivity extends BaseActivity {
         reviewDao = new ReviewDaoImp(this);
 
         List<Review> review_db = reviewDao.getAllReviews();
-        if(!review_db.isEmpty()) {
-            Log.d("reviewCache", "review cache is not null");
-            reviewNote.setVisibility(View.GONE);
-            avgRate.setVisibility(View.GONE);
-            reviewList.addAll(review_db);
-            reviewAdapter.setData(reviewList);
-            reviewAdapter.notifyDataSetChanged();
-        }
-        if(shouldStartWebDriver) {
+
+        if (shouldStartWebDriver) {
             reviewNote.setVisibility(View.GONE);
             reviewsRecyclerView.setVisibility(View.VISIBLE);
             avgRate.setVisibility(View.VISIBLE);
-
+            reviewDao.deleteAllReviews();
             performLocationOperation(ReviewsActivity.this);
         } else {
-            reviewNote.setVisibility(View.VISIBLE);
-            reviewsRecyclerView.setVisibility(View.GONE);
-            avgRate.setVisibility(View.GONE);
-
+            if (!review_db.isEmpty()) {
+                Log.d("reviewCache", "review cache is not null");
+                reviewNote.setVisibility(View.GONE);
+                avgRate.setVisibility(View.GONE);
+                reviewList.addAll(review_db);
+                reviewAdapter.setData(reviewList);
+                reviewAdapter.notifyDataSetChanged();
+            } else {
+                reviewNote.setVisibility(View.VISIBLE);
+                reviewsRecyclerView.setVisibility(View.GONE);
+                avgRate.setVisibility(View.GONE);
+            }
         }
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        addBtn.setOnClickListener(new View.OnClickListener() {
+            final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+            final FirebaseUser currentUser = mAuth.getCurrentUser();
+            final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+            @SuppressLint("SimpleDateFormat")
+            final
+            String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+            @Override
+            public void onClick(View view) {
+                Log.d("addBbtn", "clicked");
+                if (currentUser != null) {
+                    Log.d("user","not null");
+                    final DatabaseReference userRef = database.getReference("users/" + currentUser.getUid());
+                    userRef.child("history").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            boolean historyExists = false;
+
+                            for (DataSnapshot historySnapshot : dataSnapshot.getChildren()) {
+                                String snapshotHistory= historySnapshot.child("hsitory").toString();
+                                if (snapshotHistory.equals("history")) {
+                                    historyExists = true;
+                                    // Add the review to the existing reviews list
+                                    for(DataSnapshot reviewTitleSnapshot : dataSnapshot.getChildren()){
+                                        String snapsohtReviewTitle = reviewTitleSnapshot.child("reviewTitle").toString();
+                                        if(snapsohtReviewTitle.equals(detectedText)){
+                                            Toast.makeText(ReviewsActivity.this, "This review is already in your history.", Toast.LENGTH_SHORT).show();
+                                        } else {
+
+                                            userRef.child("history").child("reviewTitle").setValue(detectedText);
+                                            userRef.child("history").child("userAddress").setValue(userAddress);
+                                            userRef.child("history").child("date").setValue(timestamp);
+
+                                        }
+                                    }
+                                }
+                                else {
+                                    Toast.makeText(ReviewsActivity.this, "no history on firebase", Toast.LENGTH_SHORT).show();
+                                    DatabaseReference newReviewRef = userRef.child("history").push();
+                                    newReviewRef.child("reviewTitle").setValue(detectedText);
+                                    newReviewRef.child("reviewDate").setValue(timestamp);
+                                }
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            // Handle error
+                        }
+                    });userRef.child("history").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            boolean historyExists = false;
+
+                            for (DataSnapshot historySnapshot : dataSnapshot.getChildren()) {
+                                String snapshotHistory = historySnapshot.child("hsitory").getValue(String.class); // Fixed typo
+                                if (snapshotHistory.equals("history")) {
+                                    historyExists = true;
+                                    break;
+                                }
+                            }
+
+                            if (historyExists) {
+                                // Check if the review already exists
+                                boolean reviewExists = false;
+                                for (DataSnapshot reviewSnapshot : dataSnapshot.getChildren()) {
+                                    String reviewTitle = reviewSnapshot.child("reviewTitle").getValue(String.class);
+                                    if (reviewTitle.equals(detectedText)) {
+                                        reviewExists = true;
+                                        break;
+                                    }
+                                }
+
+                                if (reviewExists) {
+                                    Toast.makeText(ReviewsActivity.this, "This review is already in your history.", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    DatabaseReference newReviewRef = userRef.child("history").push();
+                                    newReviewRef.child("reviewTitle").setValue(detectedText);
+                                    newReviewRef.child("userAddress").setValue(userAddress);
+                                    newReviewRef.child("date").setValue(timestamp);
+                                    Toast.makeText(ReviewsActivity.this, "add to the history successfully", Toast.LENGTH_SHORT).show();
+
+                                }
+                            } else {
+                                Toast.makeText(ReviewsActivity.this, "No history on firebase", Toast.LENGTH_SHORT).show();
+                                DatabaseReference newReviewRef = userRef.child("history").push();
+                                newReviewRef.child("reviewTitle").setValue(detectedText);
+                                newReviewRef.child("userAddress").setValue(userAddress);
+                                newReviewRef.child("date").setValue(timestamp);
+                                Toast.makeText(ReviewsActivity.this, "add to the history successfully", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Log.d("firebase database error", databaseError.toString());
+                        }
+                    });
 
 
-
+                } else {
+                    Log.d("user","not null");
+                    Toast.makeText(ReviewsActivity.this, "null user reference, you have to sign-in", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     public void performLocationOperation(Context context) {
@@ -256,7 +370,7 @@ public class ReviewsActivity extends BaseActivity {
             capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
             URL seleniumGridUrl = null;
             try {
-                seleniumGridUrl = new URL("http://192.168.0.105:5555/wd/hub");
+                seleniumGridUrl = new URL("http://192.168.0.107:5555/wd/hub");
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }
