@@ -75,8 +75,6 @@ public class ReviewsActivity extends BaseActivity {
     }
 
     private List<Review> reviewList = new ArrayList<>();
-
-
     private  ReviewAdapter reviewAdapter;
     private RecyclerView reviewsRecyclerView;
     private String userAddress;
@@ -154,52 +152,15 @@ public class ReviewsActivity extends BaseActivity {
             final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
             @SuppressLint("SimpleDateFormat")
-            final
-            String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+            final String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
             @Override
             public void onClick(View view) {
                 Log.d("addBbtn", "clicked");
                 if (currentUser != null) {
                     Log.d("user","not null");
                     final DatabaseReference userRef = database.getReference("users/" + currentUser.getUid());
+
                     userRef.child("history").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            boolean historyExists = false;
-
-                            for (DataSnapshot historySnapshot : dataSnapshot.getChildren()) {
-                                String snapshotHistory= historySnapshot.child("hsitory").toString();
-                                if (snapshotHistory.equals("history")) {
-                                    historyExists = true;
-                                    // Add the review to the existing reviews list
-                                    for(DataSnapshot reviewTitleSnapshot : dataSnapshot.getChildren()){
-                                        String snapsohtReviewTitle = reviewTitleSnapshot.child("reviewTitle").toString();
-                                        if(snapsohtReviewTitle.equals(detectedText)){
-                                            Toast.makeText(ReviewsActivity.this, "This review is already in your history.", Toast.LENGTH_SHORT).show();
-                                        } else {
-
-                                            userRef.child("history").child("reviewTitle").setValue(detectedText);
-                                            userRef.child("history").child("userAddress").setValue(userAddress);
-                                            userRef.child("history").child("date").setValue(timestamp);
-
-                                        }
-                                    }
-                                }
-                                else {
-                                    Toast.makeText(ReviewsActivity.this, "no history on firebase", Toast.LENGTH_SHORT).show();
-                                    DatabaseReference newReviewRef = userRef.child("history").push();
-                                    newReviewRef.child("reviewTitle").setValue(detectedText);
-                                    newReviewRef.child("reviewDate").setValue(timestamp);
-                                }
-                            }
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            // Handle error
-                        }
-                    });userRef.child("history").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             boolean historyExists = false;
@@ -239,6 +200,7 @@ public class ReviewsActivity extends BaseActivity {
                                 newReviewRef.child("reviewTitle").setValue(detectedText);
                                 newReviewRef.child("userAddress").setValue(userAddress);
                                 newReviewRef.child("date").setValue(timestamp);
+
                                 Toast.makeText(ReviewsActivity.this, "add to the history successfully", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -370,7 +332,7 @@ public class ReviewsActivity extends BaseActivity {
             capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
             URL seleniumGridUrl = null;
             try {
-                seleniumGridUrl = new URL("http://192.168.0.107:5555/wd/hub");
+                seleniumGridUrl = new URL("http://192.168.0.106:5555/wd/hub");
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }

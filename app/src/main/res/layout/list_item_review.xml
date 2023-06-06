@@ -3,63 +3,49 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:backgroundTint="#C0CA33">
+    android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="390dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
+        android:layout_width="383dp"
+        android:layout_height="124dp"
+        android:layout_marginEnd="21dp"
+        android:background="#000000"
         android:backgroundTint="@color/dark_gray"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+
         <TextView
             android:id="@+id/historyTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="323dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:padding="10dp"
+            android:padding="4dp"
             android:textColor="@color/white"
-            android:textSize="16sp"
-            />
-
-        <RatingBar
-            android:id="@+id/ratingBar"
-            style="@android:style/Widget.DeviceDefault.Light.RatingBar"
-            android:layout_width="260dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:numStars="5"
-            android:padding="10dp"
-            android:progressTint="@color/primary_color"
-            android:stepSize="0.5" />
-
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/historyAddress"
-            android:layout_width="match_parent"
+            android:layout_width="359dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:padding="10dp"
+            android:padding="4dp"
             android:textColor="@color/light_color"
             android:textSize="14sp" />
 
         <TextView
             android:id="@+id/historyDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="361dp"
+            android:layout_height="22dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:padding="10dp"
+            android:padding="3dp"
             android:textColor="#9F9F9F"
-            android:textSize="12sp" />
+            android:textSize="10sp" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
