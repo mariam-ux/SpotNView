@@ -28,7 +28,7 @@ public class historyAdapter extends ArrayAdapter<historyItem> {
         View itemView = convertView;
         if (itemView == null) {
             LayoutInflater inflater = LayoutInflater.from(context);
-            itemView = inflater.inflate(R.layout.list_item_review, parent, false);
+            itemView = inflater.inflate(R.layout.history_item, parent, false);
         }
 
 

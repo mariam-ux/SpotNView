@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,62 +42,79 @@ public class HistoryActivity extends BaseActivity {
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_history);
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_history);
 
-        listView = findViewById(R.id.historyList);
-
-
-        Log.d("slectedItemId", String.valueOf(R.id.navigation_history));
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(this);
-
-        // set the selected item
-        bottomNavigationView.setSelectedItemId(R.id.navigation_history);
-
-        // Initialize Firebase
-        FirebaseApp.initializeApp(this);
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference usersRef = database.getReference("users");
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser != null) {
-            String userId = currentUser.getUid();
-            usersRef.child(userId).child("history").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    historyItemList = new ArrayList<>();
+            listView = findViewById(R.id.historyList);
 
 
+            Log.d("slectedItemId", String.valueOf(R.id.navigation_history));
+            bottomNavigationView = findViewById(R.id.bottom_navigation);
+            bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
-                        if (dataSnapshot.exists()) {
-                            for (DataSnapshot reviewSnapshot : dataSnapshot.getChildren()) {
-                                String date = reviewSnapshot.child("date").getValue(String.class);
-                                String reviewTitle = reviewSnapshot.child("reviewTitle").getValue(String.class);
-                                String userAddress = reviewSnapshot.child("userAddress").getValue(String.class);
-                                Log.d("title", reviewTitle);
-                                Log.d("date", date);
-                                Log.d("address", userAddress);
-                                historyItem historyItem = new historyItem(date, reviewTitle, userAddress);
-                                historyItemList.add(historyItem);
+            // set the selected item
+            bottomNavigationView.setSelectedItemId(R.id.navigation_history);
+
+            // Initialize Firebase
+            FirebaseApp.initializeApp(this);
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference usersRef = database.getReference("users");
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+            if (currentUser != null) {
+                String userId = currentUser.getUid();
+                usersRef.child(userId).child("history").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        historyItemList = new ArrayList<>();
+
+
+
+                                if (dataSnapshot.exists()) {
+                                for (DataSnapshot reviewSnapshot : dataSnapshot.getChildren()) {
+                                    String historyId = reviewSnapshot.getKey();
+                                    String date = reviewSnapshot.child("date").getValue(String.class);
+                                    String reviewTitle = reviewSnapshot.child("reviewTitle").getValue(String.class);
+                                    String userAddress = reviewSnapshot.child("userAddress").getValue(String.class);
+                                    Log.d("historyId", historyId);
+                                    Log.d("title", reviewTitle);
+                                    Log.d("date", date);
+                                    Log.d("address", userAddress);
+                                    historyItem historyItem = new historyItem(date, reviewTitle, userAddress, historyId);
+                                    historyItem.setHistoryID(historyId);
+                                    historyItemList.add(historyItem);
+                                }
                             }
-                        }
-                    else {
-                            Toast.makeText(HistoryActivity.this, "user do not have any history yet!", Toast.LENGTH_SHORT).show();
-                        }
-                    adapter = new historyAdapter(HistoryActivity.this, historyItemList);
-                    listView.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
+                        else {
+                                Toast.makeText(HistoryActivity.this, "user do not have any history yet!", Toast.LENGTH_SHORT).show();
+                            }
+                        adapter = new historyAdapter(HistoryActivity.this, historyItemList);
+                        listView.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
 
-                }
+                    }
 
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.d("db error", databaseError.toString());
+                    }
+                });
+            } else {
+                Toast.makeText(this, "user is not signed in", Toast.LENGTH_SHORT).show();
+            }
+
+
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Log.d("db error", databaseError.toString());
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    historyItem selectedItem = historyItemList.get(position);
+                    String historyID = selectedItem.getHistoryID();
+
+                    Intent intent = new Intent(HistoryActivity.this, historyDetails.class);
+                    intent.putExtra("historyID", historyID);
+                    startActivity(intent);
                 }
             });
-        } else {
-            Toast.makeText(this, "user is not signed in", Toast.LENGTH_SHORT).show();
-        }
     }
 
 }

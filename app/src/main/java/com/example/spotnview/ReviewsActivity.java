@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -84,12 +85,13 @@ public class ReviewsActivity extends BaseActivity {
     Duration duration = Duration.ofSeconds(60);
     private String searchedText;
     private TextView avgRate;
-
     private Boolean shouldStartWebDriver;
     private ReviewDaoImp reviewDao;
     private Timer reviewClearTimer;
     private TextView reviewNote;
     private Button addBtn;
+    private List<String> detailsList = new ArrayList<>();
+
     @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +101,8 @@ public class ReviewsActivity extends BaseActivity {
         reviewNote = findViewById(R.id.reviewNote);
         addBtn = findViewById(R.id.addBtn);
         addBtn.setVisibility(View.VISIBLE);
+
+
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         // set the selected item
@@ -191,6 +195,7 @@ public class ReviewsActivity extends BaseActivity {
                                     newReviewRef.child("reviewTitle").setValue(detectedText);
                                     newReviewRef.child("userAddress").setValue(userAddress);
                                     newReviewRef.child("date").setValue(timestamp);
+                                    newReviewRef.child("reviews").setValue(detailsList);
                                     Toast.makeText(ReviewsActivity.this, "add to the history successfully", Toast.LENGTH_SHORT).show();
 
                                 }
@@ -200,7 +205,7 @@ public class ReviewsActivity extends BaseActivity {
                                 newReviewRef.child("reviewTitle").setValue(detectedText);
                                 newReviewRef.child("userAddress").setValue(userAddress);
                                 newReviewRef.child("date").setValue(timestamp);
-
+                                newReviewRef.child("reviews").setValue(detailsList);
                                 Toast.makeText(ReviewsActivity.this, "add to the history successfully", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -332,7 +337,7 @@ public class ReviewsActivity extends BaseActivity {
             capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
             URL seleniumGridUrl = null;
             try {
-                seleniumGridUrl = new URL("http://192.168.0.106:5555/wd/hub");
+                seleniumGridUrl = new URL("http://192.168.0.106:4444/wd/hub");
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }
@@ -353,7 +358,7 @@ public class ReviewsActivity extends BaseActivity {
 
 
                 // locate the parent element
-                WebElement parentElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='sbsb_b']")));
+                WebElement parentElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"ydp1wd-haAclf\"]")));
                 // locate the child elements and sort them based on their y-coordinate
                 List<WebElement> childElements = parentElement.findElements(By.xpath("./div"));
                 childElements.sort(new Comparator<WebElement>() {
@@ -371,7 +376,7 @@ public class ReviewsActivity extends BaseActivity {
 
 
                 // Click on the "Reviews" tab to view the restaurant's reviews
-                WebElement reviewsBar = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='RWPxGd']")));
+                WebElement reviewsBar = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"QA0Szd\"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[3]/div/div")));
                 List<WebElement> reviewBarChild = reviewsBar.findElements(By.xpath("./button"));
 
                 reviewBarChild.sort(new Comparator<WebElement>() {
@@ -426,6 +431,7 @@ public class ReviewsActivity extends BaseActivity {
                     if (!reviewTextElements.isEmpty()) {
                         reviewText = reviewTextElements.get(0);
                         reviewTextRetrieve = reviewText.getText();
+                        detailsList.add(reviewTextRetrieve);
                     }
 
                     String ariaLabel = rate.getAttribute("aria-label");
@@ -441,6 +447,7 @@ public class ReviewsActivity extends BaseActivity {
                     ratingBar.setRating(rating);
                     ratingBar.setIsIndicator(false);
                     Log.d("get rating", String.valueOf(ratingBar.getRating()));
+
 
 
                     Review reviewItem = new Review(userName.getText(), reviewTextRetrieve, ratingBar, reviewdate.getText() );
@@ -492,7 +499,7 @@ public class ReviewsActivity extends BaseActivity {
 
             }finally {
                 // Close the driver
-               driver.quit();
+              /* driver.quit();*/
             }
         }
     }
