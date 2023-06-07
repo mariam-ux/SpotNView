@@ -171,7 +171,7 @@ public class ReviewsActivity extends BaseActivity {
 
                             for (DataSnapshot historySnapshot : dataSnapshot.getChildren()) {
                                 String snapshotHistory = historySnapshot.child("hsitory").getValue(String.class); // Fixed typo
-                                if (snapshotHistory.equals("history")) {
+                                if (snapshotHistory != null && snapshotHistory.equals("history")) {
                                     historyExists = true;
                                     break;
                                 }
@@ -182,7 +182,7 @@ public class ReviewsActivity extends BaseActivity {
                                 boolean reviewExists = false;
                                 for (DataSnapshot reviewSnapshot : dataSnapshot.getChildren()) {
                                     String reviewTitle = reviewSnapshot.child("reviewTitle").getValue(String.class);
-                                    if (reviewTitle.equals(detectedText)) {
+                                    if (reviewTitle != null && reviewTitle.equals(detectedText)) {
                                         reviewExists = true;
                                         break;
                                     }

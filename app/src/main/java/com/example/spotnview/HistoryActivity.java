@@ -15,6 +15,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.FirebaseApp;
 import com.firebase.ui.database.FirebaseListAdapter;
@@ -36,6 +38,11 @@ public class HistoryActivity extends BaseActivity {
     private ListView listView;
     private List<historyItem> historyItemList;
     private historyAdapter adapter;
+
+    private final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private final DatabaseReference usersRef = database.getReference("users");
+    private final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+    private final String userId = currentUser.getUid();
     @Override
     protected int getContentViewId() {
         return R.layout.activity_history;
@@ -46,30 +53,19 @@ public class HistoryActivity extends BaseActivity {
             setContentView(R.layout.activity_history);
 
             listView = findViewById(R.id.historyList);
-
+            FirebaseApp.initializeApp(this);
 
             Log.d("slectedItemId", String.valueOf(R.id.navigation_history));
             bottomNavigationView = findViewById(R.id.bottom_navigation);
             bottomNavigationView.setOnNavigationItemSelectedListener(this);
-
             // set the selected item
             bottomNavigationView.setSelectedItemId(R.id.navigation_history);
-
             // Initialize Firebase
-            FirebaseApp.initializeApp(this);
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference usersRef = database.getReference("users");
-            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-
             if (currentUser != null) {
-                String userId = currentUser.getUid();
                 usersRef.child(userId).child("history").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         historyItemList = new ArrayList<>();
-
-
-
                                 if (dataSnapshot.exists()) {
                                 for (DataSnapshot reviewSnapshot : dataSnapshot.getChildren()) {
                                     String historyId = reviewSnapshot.getKey();
@@ -89,8 +85,40 @@ public class HistoryActivity extends BaseActivity {
                                 Toast.makeText(HistoryActivity.this, "user do not have any history yet!", Toast.LENGTH_SHORT).show();
                             }
                         adapter = new historyAdapter(HistoryActivity.this, historyItemList);
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                historyItem selectedItem = historyItemList.get(position);
+                                String historyID = selectedItem.getHistoryID();
+                                Intent intent = new Intent(HistoryActivity.this, historyDetails.class);
+                                intent.putExtra("historyID", historyID);
+                                startActivity(intent);
+                            }
+                        });
+                        adapter.setOnDeleteClickListener(new historyAdapter.OnDeleteClickListener() {
+                            @Override
+                            public void onDeleteClick(int position) {
+                                historyItem selectedItem = historyItemList.get(position);
+                                String historyID = selectedItem.getHistoryID();
+                                DatabaseReference historyRef = usersRef.child(userId).child("history").child(historyID);
+                                historyRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(HistoryActivity.this, "History item deleted", Toast.LENGTH_SHORT).show();
+                                            historyItemList.remove(position);
+                                            adapter.notifyDataSetChanged();
+                                        } else {
+                                            Toast.makeText(HistoryActivity.this, "Failed to delete history item", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            }
+                        });
                         listView.setAdapter(adapter);
                         adapter.notifyDataSetChanged();
+
+
 
                     }
 
@@ -104,17 +132,8 @@ public class HistoryActivity extends BaseActivity {
             }
 
 
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    historyItem selectedItem = historyItemList.get(position);
-                    String historyID = selectedItem.getHistoryID();
 
-                    Intent intent = new Intent(HistoryActivity.this, historyDetails.class);
-                    intent.putExtra("historyID", historyID);
-                    startActivity(intent);
-                }
-            });
+
     }
 
 }

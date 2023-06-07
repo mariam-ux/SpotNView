@@ -1,6 +1,8 @@
 package com.example.spotnview;
 
-public class historyItem {
+import java.io.Serializable;
+
+public class historyItem implements Serializable {
 
     private String date;
     private String reviewTitle;

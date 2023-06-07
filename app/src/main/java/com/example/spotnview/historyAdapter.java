@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,7 +16,7 @@ import java.util.List;
 public class historyAdapter extends ArrayAdapter<historyItem> {
     private Context context;
     private List<historyItem> reviewList;
-
+    private OnDeleteClickListener onDeleteClickListener;
     public historyAdapter(Context context, List<historyItem> reviewList) {
         super(context, 0);
         this.context = context;
@@ -43,7 +44,15 @@ public class historyAdapter extends ArrayAdapter<historyItem> {
            dateTextView.setText(currentReview.getDate());
            titleTextView.setText(currentReview.getReviewTitle());
            addressTextView.setText(currentReview.getUserAddress());
-
+            ImageButton deleteButton = itemView.findViewById(R.id.imageButton);
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onDeleteClickListener != null) {
+                        onDeleteClickListener.onDeleteClick(position);
+                    }
+                }
+        });
 
 
         return itemView;
@@ -51,5 +60,13 @@ public class historyAdapter extends ArrayAdapter<historyItem> {
     @Override
     public int getCount() {
         return reviewList.size();
+    }
+
+    public interface OnDeleteClickListener {
+        void onDeleteClick(int position);
+    }
+
+    public void setOnDeleteClickListener(OnDeleteClickListener listener) {
+        onDeleteClickListener = listener;
     }
 }
